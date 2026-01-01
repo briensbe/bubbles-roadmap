@@ -1,0 +1,73 @@
+import { Component, inject, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RoadmapService } from '../roadmap.service';
+import { ProjectBubbleComponent } from '../project-bubble/project-bubble.component';
+import { ProjectBubble } from '../models/project.model';
+
+@Component({
+  selector: 'app-roadmap',
+  standalone: true,
+  imports: [CommonModule, ProjectBubbleComponent],
+  templateUrl: './roadmap.component.html',
+  styleUrl: './roadmap.component.css'
+})
+export class RoadmapComponent implements OnInit {
+  roadmapService = inject(RoadmapService);
+  projects = this.roadmapService.projects;
+
+  months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  
+  // Constants defining the grid dimensions in pixels (must match CSS .roadmap-grid)
+  private GRID_WIDTH = 1200;
+  private GRID_HEIGHT = 600;
+  private VALUE_RANGE = 50; // Max value for Y axis
+  
+  // Constants for size scaling (must match ProjectBubbleComponent)
+  private MIN_SIZE = 40;
+  private MAX_SIZE = 120;
+  private COMPLEXITY_RANGE = 50;
+
+  serviceColors = [
+    { name: 'Finance', class: 'finance-bubble' },
+    { name: 'Marketing', class: 'marketing-bubble' },
+    { name: 'IT', class: 'it-bubble' },
+    { name: 'HR', class: 'hr-bubble' },
+  ];
+
+  ngOnInit(): void {
+    // Initialization logic if needed
+  }
+
+  getBubbleSize(complexity: number): number {
+    return this.MIN_SIZE + (complexity / this.COMPLEXITY_RANGE) * (this.MAX_SIZE - this.MIN_SIZE);
+  }
+
+  /**
+   * Calculates the X position (in pixels) based on the project's start date (month).
+   * Maps the date within the year to a position across the GRID_WIDTH.
+   */
+  calculateXPosition(date: Date): number {
+    const month = date.getMonth(); // 0 (Jan) to 11 (Dec)
+    const dayOfMonth = date.getDate();
+    const daysInMonth = new Date(date.getFullYear(), month + 1, 0).getDate();
+    
+    // Calculate position within the month slot (0 to 1/12th of the width)
+    const monthFraction = (dayOfMonth - 1) / daysInMonth;
+    
+    // Calculate total position: (Month Index + Fraction) / 12 * GRID_WIDTH
+    const normalizedPosition = (month + monthFraction) / 12;
+    
+    // Return the position of the center point on the timeline
+    return normalizedPosition * this.GRID_WIDTH;
+  }
+
+  /**
+   * Calculates the Y position (in pixels) based on the project's value (0-50).
+   * Maps Value 0 to the bottom (0px) and Value 50 to the top (GRID_HEIGHT).
+   */
+  calculateYPosition(value: number): number {
+    // Value 0 maps to 0px (bottom), Value 50 maps to 600px (top)
+    const normalizedValue = Math.min(value, this.VALUE_RANGE) / this.VALUE_RANGE;
+    return normalizedValue * this.GRID_HEIGHT;
+  }
+}

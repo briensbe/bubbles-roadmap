@@ -1,0 +1,13 @@
+<div 
+  class="bubble-container" 
+  [ngClass]="serviceColorClass"
+  [style.width.px]="size" 
+  [style.height.px]="size"
+  cdkDrag
+  (cdkDragEnded)="onDragEnd($event)"
+>
+  <div class="bubble" [style.width.px]="size" [style.height.px]="size">
+    <span class="bubble-name">{{ project.name }}</span>
+    <span class="bubble-service">{{ project.service }}</span>
+  </div>
+</div>

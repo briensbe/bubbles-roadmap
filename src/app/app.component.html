@@ -1,10 +1,27 @@
 <div class="main">
-  <img src="https://angular.io/assets/images/logos/angular/angular.svg" alt="Angular Logo" width="120">
-  <h1>Welcome to your Angular App!</h1>
-  <p>This is a minimal template for Dyad.sh with Select UI to Edit support.</p>
-  <p>Edit <code>src/app/app.component.ts</code> to get started.</p>
-  
-  <app-hello></app-hello>
+  <div class="header">
+    <h1>Project Roadmap Dashboard</h1>
+    <div class="view-toggle">
+      <button 
+        (click)="setView('dashboard')" 
+        [class.active]="currentView === 'dashboard'"
+      >
+        Bubble Chart View
+      </button>
+      <button 
+        (click)="setView('list')" 
+        [class.active]="currentView === 'list'"
+      >
+        List View
+      </button>
+    </div>
+  </div>
+
+  <div class="main-content">
+    @if (currentView === 'dashboard') {
+      <app-roadmap></app-roadmap>
+    } @else {
+      <app-project-list></app-project-list>
+    }
+  </div>
 </div>
-
-

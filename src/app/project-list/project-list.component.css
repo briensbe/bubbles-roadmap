@@ -1,0 +1,38 @@
+.list-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.project-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.project-table th, .project-table td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+}
+
+.project-table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.project-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.service-indicator {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.finance-bubble { background-color: #3498db; }
+.marketing-bubble { background-color: #2ecc71; }
+.it-bubble { background-color: #e74c3c; }
+.hr-bubble { background-color: #f39c12; }

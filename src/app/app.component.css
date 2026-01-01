@@ -1,21 +1,54 @@
 .main {
   font-family: Arial, sans-serif;
-  text-align: center;
   padding: 2rem;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
 }
 
+.header {
+  width: 100%;
+  max-width: 1300px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.view-toggle button {
+  padding: 10px 15px;
+  margin-left: 10px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.view-toggle button:hover {
+  background-color: #f0f0f0;
+}
+
+.view-toggle button.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.main-content {
+  width: 100%;
+  max-width: 1300px; /* Wider container for the roadmap */
+}
+
+/* Existing styles kept for reference */
 .main img {
-  margin-bottom: 2rem;
+  display: none; /* Hide Angular logo */
 }
 
 .main h1 {
   color: #333;
-  margin-bottom: 1rem;
+  margin-bottom: 0;
 }
 
 .main p {

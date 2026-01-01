@@ -1,0 +1,52 @@
+.bubble-container {
+  position: absolute;
+  cursor: grab;
+  transition: transform 0.1s ease-out; /* Smooth movement */
+  z-index: 10;
+}
+
+.bubble {
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  padding: 5px;
+}
+
+.bubble:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  z-index: 11;
+}
+
+.bubble-name {
+  font-size: 0.8rem;
+  font-weight: bold;
+  line-height: 1.1;
+  max-width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bubble-service {
+  font-size: 0.6rem;
+  opacity: 0.8;
+}
+
+/* Color Coding based on Service */
+.finance-bubble { background-color: #3498db; } /* Blue */
+.marketing-bubble { background-color: #2ecc71; } /* Green */
+.it-bubble { background-color: #e74c3c; } /* Red */
+.hr-bubble { background-color: #f39c12; } /* Orange */
+
+/* Dragging state */
+.cdk-drag-dragging {
+  opacity: 0.8;
+  cursor: grabbing;
+}

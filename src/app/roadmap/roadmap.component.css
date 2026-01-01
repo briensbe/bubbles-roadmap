@@ -1,0 +1,106 @@
+.roadmap-container {
+  padding: 20px;
+  overflow-x: auto; /* Allows horizontal scrolling for the timeline */
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.roadmap-grid {
+  position: relative;
+  width: 1200px; /* Fixed width for the timeline (e.g., 100px per month * 12 months) */
+  height: 600px; /* Fixed height for the Value axis */
+  border: 1px solid #ccc;
+  background-color: white;
+  margin: 0 80px; /* Space for Y axis labels */
+}
+
+.axis-y {
+  position: absolute;
+  left: -60px;
+  top: 0;
+  height: 100%;
+  width: 50px;
+  display: flex;
+  flex-direction: column-reverse; /* Value 0 at bottom, 50 at top */
+  justify-content: space-between;
+  padding: 0 5px;
+  font-size: 0.8rem;
+  color: #555;
+}
+
+.axis-y-label {
+  position: absolute;
+  left: -100px;
+  top: 50%;
+  transform: rotate(-90deg) translateY(-50%);
+  font-weight: bold;
+  font-size: 1rem;
+  color: #333;
+}
+
+.axis-x {
+  position: absolute;
+  bottom: -30px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #555;
+}
+
+.month-label {
+  flex-basis: calc(100% / 12);
+  text-align: center;
+  border-left: 1px dashed #eee;
+}
+
+.month-label:first-child {
+  border-left: none;
+}
+
+.grid-line-y {
+  position: absolute;
+  width: 100%;
+  border-top: 1px dashed #eee;
+}
+
+.grid-line-x {
+  position: absolute;
+  height: 100%;
+  border-left: 1px dashed #eee;
+}
+
+.complexity-legend {
+  margin-top: 40px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  display: inline-block;
+  margin-right: 20px;
+}
+
+.complexity-legend h4 {
+  margin-bottom: 5px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.legend-bubble {
+  border-radius: 50%;
+  background-color: #ccc;
+  margin-right: 10px;
+  border: 1px solid #aaa;
+}
+
+/* Color Coding based on Service (repeated here for legend) */
+.finance-bubble { background-color: #3498db; }
+.marketing-bubble { background-color: #2ecc71; }
+.it-bubble { background-color: #e74c3c; }
+.hr-bubble { background-color: #f39c12; }
