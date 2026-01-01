@@ -38,6 +38,7 @@
         [style.left.px]="calculateXPosition(project.startDate) - (getBubbleSize(project.complexity) / 2)"
         [style.bottom.px]="calculateYPosition(project.value) - (getBubbleSize(project.complexity) / 2)"
         (edit)="openEditModal(project)"
+        (positionChange)="handlePositionChange($event)"
       ></app-project-bubble>
     }
   </div>

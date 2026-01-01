@@ -82,4 +82,40 @@ export class RoadmapComponent implements OnInit {
   closeEditModal(): void {
     this.selectedProject.set(null);
   }
+  
+  /**
+   * Handles the end of a drag event, calculates new data values, and opens the modal.
+   */
+  handlePositionChange(event: { project: ProjectBubble, newX: number, newY: number }): void {
+    const { project, newX, newY } = event;
+    
+    // 1. Calculate new Value (Y position)
+    // newY is the pixel position from the bottom of the grid (0 to GRID_HEIGHT)
+    const normalizedValue = Math.max(0, Math.min(newY, this.GRID_HEIGHT)) / this.GRID_HEIGHT;
+    const newValue = Math.round(normalizedValue * this.VALUE_RANGE);
+    
+    // 2. Calculate new Start Date (X position)
+    // newX is the pixel position from the left of the grid (0 to GRID_WIDTH)
+    const normalizedTime = Math.max(0, Math.min(newX, this.GRID_WIDTH)) / this.GRID_WIDTH; // 0 to 1
+    const totalMonths = normalizedTime * 12;
+    const monthIndex = Math.floor(totalMonths); // 0 to 11
+    const dayFraction = totalMonths - monthIndex;
+    
+    const currentYear = new Date().getFullYear();
+    const daysInNewMonth = new Date(currentYear, monthIndex + 1, 0).getDate();
+    const newDay = Math.max(1, Math.round(dayFraction * daysInNewMonth));
+    
+    const newStartDate = new Date(currentYear, monthIndex, newDay);
+    
+    // Create a temporary project object with updated values
+    const updatedProject: ProjectBubble = {
+      ...project,
+      value: newValue,
+      startDate: newStartDate,
+      // Complexity remains unchanged by drag, but can be edited in the modal
+    };
+    
+    // Open the modal with the updated project data for confirmation/further editing
+    this.selectedProject.set(updatedProject);
+  }
 }

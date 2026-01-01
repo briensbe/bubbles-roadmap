@@ -19,6 +19,7 @@ export class ProjectBubbleComponent implements OnInit {
   @Input({ required: true }) initialY!: number;
   
   @Output() edit = new EventEmitter<ProjectBubble>();
+  @Output() positionChange = new EventEmitter<{ project: ProjectBubble, newX: number, newY: number }>();
 
   roadmapService = inject(RoadmapService);
 
@@ -41,14 +42,27 @@ export class ProjectBubbleComponent implements OnInit {
   }
 
   onDragEnd(event: CdkDragEnd): void {
-    // We reset the drag position to zero so that the next render uses the calculated initialX/Y
-    // Manual dragging is purely visual in this implementation unless persistence is requested.
-    event.source.reset();
+    // Get the current position relative to the starting point
+    const dragOffset = event.distance;
     
-    console.log(`Project ${this.project.name} dragged.`);
+    // Calculate the new center position in pixels relative to the grid origin (bottom-left)
+    const newX = this.initialX + dragOffset.x;
+    const newY = this.initialY - dragOffset.y; // Y is inverted for CSS bottom property
+    
+    this.positionChange.emit({
+      project: this.project,
+      newX: newX,
+      newY: newY
+    });
+    
+    // Do NOT reset the drag position here. We let the parent component handle the update
+    // and Angular re-render the component at the new calculated position.
+    // event.source.reset(); // Removing reset to allow visual drag until data update
   }
   
-  onBubbleClick(): void {
+  onBubbleClick(event: MouseEvent): void {
+    // Prevent click event from firing immediately after drag end
+    if (event.detail === 0) return; 
     this.edit.emit(this.project);
   }
 }
