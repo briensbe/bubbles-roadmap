@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { ProjectBubble } from '../models/project.model';
 import { FormsModule } from '@angular/forms';
 import { RoadmapService } from '../roadmap.service';
@@ -7,7 +7,7 @@ import { RoadmapService } from '../roadmap.service';
 @Component({
   selector: 'app-project-edit-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, DatePipe], // Added DatePipe here
   templateUrl: './project-edit-modal.component.html',
   styleUrl: './project-edit-modal.component.css'
 })
@@ -26,6 +26,15 @@ export class ProjectEditModalComponent implements OnInit {
   ngOnInit(): void {
     // Create a deep copy of the project for editing
     this.editedProject = { ...this.project };
+  }
+
+  updateStartDate(dateString: string): void {
+    if (dateString) {
+      // When setting a date from an input type="date", we want to ensure it's treated as UTC midnight
+      // to avoid timezone shifts when converting back to 'yyyy-MM-dd' for display.
+      // However, since the input gives us a local date string, we can just create a new Date object from it.
+      this.editedProject.startDate = new Date(dateString);
+    }
   }
 
   saveChanges(): void {

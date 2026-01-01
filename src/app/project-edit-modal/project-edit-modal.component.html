@@ -19,12 +19,12 @@
       
       <div class="form-group">
         <label for="startDate">Start Date</label>
-        <!-- We need to convert Date object to string for input type="date" -->
+        <!-- We use the DatePipe to format the Date object for the input value -->
         <input 
           id="startDate" 
           type="date" 
           [ngModel]="editedProject.startDate | date:'yyyy-MM-dd'" 
-          (ngModelChange)="editedProject.startDate = $event ? new Date($event) : editedProject.startDate"
+          (ngModelChange)="updateStartDate($event)"
           name="startDate" 
           required
         >
