@@ -47,8 +47,9 @@
   opacity: 0.8;
 }
 
-/* Resize Handle Styling */
-.resize-handle {
+/* Styling for ngx-resizable handles */
+/* We target the specific handle used (bottomRight) */
+.resize-handle-bottom-right {
   position: absolute;
   bottom: 0;
   right: 0;
@@ -57,7 +58,7 @@
   background-color: rgba(255, 255, 255, 0.8);
   border-radius: 50%;
   border: 2px solid #333;
-  cursor: nwse-resize;
+  cursor: nwse-resize !important; /* Override default cursor */
   z-index: 20;
   transform: translate(50%, 50%); /* Position it outside the bubble border */
 }

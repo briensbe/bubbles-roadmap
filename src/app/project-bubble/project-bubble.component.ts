@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { CdkDrag, CdkDragEnd, DragDropModule } from '@angular/cdk/drag-drop';
 import { ProjectBubble } from '../models/project.model';
 import { RoadmapService } from '../roadmap.service';
+import { ResizableModule, ResizeEvent } from 'ngx-resizable';
 
 @Component({
   selector: 'app-project-bubble',
   standalone: true,
-  imports: [CommonModule, DragDropModule],
+  imports: [CommonModule, DragDropModule, ResizableModule],
   templateUrl: './project-bubble.component.html',
   styleUrl: './project-bubble.component.css'
 })
@@ -20,7 +21,7 @@ export class ProjectBubbleComponent implements OnInit {
   
   @Output() edit = new EventEmitter<ProjectBubble>();
   @Output() positionChange = new EventEmitter<{ project: ProjectBubble, newX: number, newY: number }>();
-  @Output() complexityChange = new EventEmitter<{ project: ProjectBubble, newComplexity: number }>(); // New output
+  @Output() complexityChange = new EventEmitter<{ project: ProjectBubble, newComplexity: number }>();
 
   roadmapService = inject(RoadmapService);
 
@@ -28,8 +29,8 @@ export class ProjectBubbleComponent implements OnInit {
   serviceColorClass: string = '';
 
   // Configuration for size scaling (0-50 complexity maps to 40px - 120px diameter)
-  private MIN_SIZE = 40;
-  private MAX_SIZE = 120;
+  readonly MIN_SIZE = 40;
+  readonly MAX_SIZE = 120;
   private COMPLEXITY_RANGE = 50;
 
   ngOnInit(): void {
@@ -46,6 +47,14 @@ export class ProjectBubbleComponent implements OnInit {
   calculateSize(): void {
     // Linear scaling: size = MIN + (Complexity / COMPLEXITY_RANGE) * (MAX - MIN)
     this.size = this.MIN_SIZE + (this.project.complexity / this.COMPLEXITY_RANGE) * (this.MAX_SIZE - this.MIN_SIZE);
+  }
+
+  // Method to calculate complexity from size
+  calculateComplexity(size: number): number {
+    // Inverse scaling: Complexity = ((Size - MIN) / (MAX - MIN)) * COMPLEXITY_RANGE
+    const clampedSize = Math.max(this.MIN_SIZE, Math.min(this.MAX_SIZE, size));
+    const normalizedSize = (clampedSize - this.MIN_SIZE) / (this.MAX_SIZE - this.MIN_SIZE);
+    return Math.round(normalizedSize * this.COMPLEXITY_RANGE);
   }
 
   onDragEnd(event: CdkDragEnd): void {
@@ -66,30 +75,17 @@ export class ProjectBubbleComponent implements OnInit {
     event.source.reset();
   }
   
-  onResizeDragEnd(event: CdkDragEnd): void {
-    // We only care about the distance dragged in the X direction (or magnitude)
-    const dragDistance = event.distance.x;
+  onResizeEnd(event: ResizeEvent): void {
+    // We only care about the new width (since it's a circle, width == height)
+    const newSize = event.rectangle.width || this.size;
     
-    // Calculate the change in complexity based on drag distance
-    // We assume 1px drag corresponds to a small change in complexity.
-    // Let's map 80px of drag to the full complexity range (50 points).
-    const PIXELS_PER_COMPLEXITY_POINT = 80 / this.COMPLEXITY_RANGE;
-    
-    const complexityChange = Math.round(dragDistance / PIXELS_PER_COMPLEXITY_POINT);
-    
-    let newComplexity = this.project.complexity + complexityChange;
-    
-    // Clamp complexity between 0 and 50
-    newComplexity = Math.max(0, Math.min(50, newComplexity));
+    const newComplexity = this.calculateComplexity(newSize);
     
     // Emit the new complexity
     this.complexityChange.emit({
       project: this.project,
       newComplexity: newComplexity
     });
-    
-    // Reset the drag position of the handle
-    event.source.reset();
   }
   
   onBubbleClick(event: MouseEvent): void {
