@@ -61,7 +61,7 @@ export class ProjectBubbleComponent implements OnInit {
   }
   
   onBubbleClick(event: MouseEvent): void {
-    // Prevent click event from firing immediately after drag end
+    // Prevent click event from firing immediately after drag end (detail is 0 for synthetic clicks)
     if (event.detail === 0) return; 
     this.edit.emit(this.project);
   }
