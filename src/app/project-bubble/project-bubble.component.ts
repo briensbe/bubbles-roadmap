@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { CdkDrag, CdkDragEnd, DragDropModule } from '@angular/cdk/drag-drop';
 import { ProjectBubble } from '../models/project.model';
 import { RoadmapService } from '../roadmap.service';
-import { ResizableModule, ResizeEvent } from 'ngx-resizable';
+import { ResizableModule, ResizeEvent } from 'angular-resizable-element';
 
 @Component({
   selector: 'app-project-bubble',
