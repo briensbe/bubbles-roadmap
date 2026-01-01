@@ -24,6 +24,7 @@
   transition: background-color 0.3s;
   border: 2px solid rgba(255, 255, 255, 0.5);
   padding: 5px;
+  position: relative; /* Needed for absolute positioning of handle */
 }
 
 .bubble:hover {
@@ -44,6 +45,21 @@
 .bubble-service {
   font-size: 0.6rem;
   opacity: 0.8;
+}
+
+/* Resize Handle Styling */
+.resize-handle {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 15px;
+  height: 15px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  border: 2px solid #333;
+  cursor: nwse-resize;
+  z-index: 20;
+  transform: translate(50%, 50%); /* Position it outside the bubble border */
 }
 
 /* Color Coding based on Service */

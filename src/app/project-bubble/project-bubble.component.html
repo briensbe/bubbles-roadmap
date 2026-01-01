@@ -10,5 +10,13 @@
   <div class="bubble" [style.width.px]="size" [style.height.px]="size">
     <span class="bubble-name">{{ project.name }}</span>
     <span class="bubble-service">{{ project.service }}</span>
+    
+    <!-- Resize Handle -->
+    <div 
+      class="resize-handle" 
+      cdkDrag
+      cdkDragBoundary=".bubble-container"
+      (cdkDragEnded)="onResizeDragEnd($event)"
+    ></div>
   </div>
 </div>

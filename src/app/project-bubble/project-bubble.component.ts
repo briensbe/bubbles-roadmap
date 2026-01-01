@@ -20,6 +20,7 @@ export class ProjectBubbleComponent implements OnInit {
   
   @Output() edit = new EventEmitter<ProjectBubble>();
   @Output() positionChange = new EventEmitter<{ project: ProjectBubble, newX: number, newY: number }>();
+  @Output() complexityChange = new EventEmitter<{ project: ProjectBubble, newComplexity: number }>(); // New output
 
   roadmapService = inject(RoadmapService);
 
@@ -32,6 +33,12 @@ export class ProjectBubbleComponent implements OnInit {
   private COMPLEXITY_RANGE = 50;
 
   ngOnInit(): void {
+    this.calculateSize();
+    this.serviceColorClass = this.roadmapService.getServiceColor(this.project.service);
+  }
+
+  ngOnChanges(): void {
+    // Recalculate size if project input changes (e.g., after modal edit)
     this.calculateSize();
     this.serviceColorClass = this.roadmapService.getServiceColor(this.project.service);
   }
@@ -55,9 +62,34 @@ export class ProjectBubbleComponent implements OnInit {
       newY: newY
     });
     
-    // Do NOT reset the drag position here. We let the parent component handle the update
-    // and Angular re-render the component at the new calculated position.
-    // event.source.reset(); // Removing reset to allow visual drag until data update
+    // Reset the drag position visually after emitting the change
+    event.source.reset();
+  }
+  
+  onResizeDragEnd(event: CdkDragEnd): void {
+    // We only care about the distance dragged in the X direction (or magnitude)
+    const dragDistance = event.distance.x;
+    
+    // Calculate the change in complexity based on drag distance
+    // We assume 1px drag corresponds to a small change in complexity.
+    // Let's map 80px of drag to the full complexity range (50 points).
+    const PIXELS_PER_COMPLEXITY_POINT = 80 / this.COMPLEXITY_RANGE;
+    
+    const complexityChange = Math.round(dragDistance / PIXELS_PER_COMPLEXITY_POINT);
+    
+    let newComplexity = this.project.complexity + complexityChange;
+    
+    // Clamp complexity between 0 and 50
+    newComplexity = Math.max(0, Math.min(50, newComplexity));
+    
+    // Emit the new complexity
+    this.complexityChange.emit({
+      project: this.project,
+      newComplexity: newComplexity
+    });
+    
+    // Reset the drag position of the handle
+    event.source.reset();
   }
   
   onBubbleClick(event: MouseEvent): void {

@@ -90,12 +90,10 @@ export class RoadmapComponent implements OnInit {
     const { project, newX, newY } = event;
     
     // 1. Calculate new Value (Y position)
-    // newY is the pixel position from the bottom of the grid (0 to GRID_HEIGHT)
     const normalizedValue = Math.max(0, Math.min(newY, this.GRID_HEIGHT)) / this.GRID_HEIGHT;
     const newValue = Math.round(normalizedValue * this.VALUE_RANGE);
     
     // 2. Calculate new Start Date (X position)
-    // newX is the pixel position from the left of the grid (0 to GRID_WIDTH)
     const normalizedTime = Math.max(0, Math.min(newX, this.GRID_WIDTH)) / this.GRID_WIDTH; // 0 to 1
     const totalMonths = normalizedTime * 12;
     const monthIndex = Math.floor(totalMonths); // 0 to 11
@@ -112,7 +110,22 @@ export class RoadmapComponent implements OnInit {
       ...project,
       value: newValue,
       startDate: newStartDate,
-      // Complexity remains unchanged by drag, but can be edited in the modal
+    };
+    
+    // Open the modal with the updated project data for confirmation/further editing
+    this.selectedProject.set(updatedProject);
+  }
+  
+  /**
+   * Handles the end of a resize drag event, updates complexity, and opens the modal.
+   */
+  handleComplexityChange(event: { project: ProjectBubble, newComplexity: number }): void {
+    const { project, newComplexity } = event;
+    
+    // Create a temporary project object with updated complexity
+    const updatedProject: ProjectBubble = {
+      ...project,
+      complexity: newComplexity,
     };
     
     // Open the modal with the updated project data for confirmation/further editing
