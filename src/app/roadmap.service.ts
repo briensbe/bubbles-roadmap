@@ -34,4 +34,11 @@ export class RoadmapService {
       projects.map(p => p.id === id ? { ...p, x: newX, y: newY } : p)
     );
   }
+  
+  // New function to update project details
+  updateProject(updatedProject: ProjectBubble): void {
+    this.projectsSource.update(projects => 
+      projects.map(p => p.id === updatedProject.id ? updatedProject : p)
+    );
+  }
 }

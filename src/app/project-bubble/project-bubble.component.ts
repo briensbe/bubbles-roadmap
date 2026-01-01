@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, Input, OnInit, inject, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CdkDrag, CdkDragEnd, DragDropModule } from '@angular/cdk/drag-drop';
 import { ProjectBubble } from '../models/project.model';
@@ -17,6 +17,8 @@ export class ProjectBubbleComponent implements OnInit {
   // Inputs for initial positioning (handled by parent component)
   @Input({ required: true }) initialX!: number;
   @Input({ required: true }) initialY!: number;
+  
+  @Output() edit = new EventEmitter<ProjectBubble>();
 
   roadmapService = inject(RoadmapService);
 
@@ -44,5 +46,9 @@ export class ProjectBubbleComponent implements OnInit {
     event.source.reset();
     
     console.log(`Project ${this.project.name} dragged.`);
+  }
+  
+  onBubbleClick(): void {
+    this.edit.emit(this.project);
   }
 }

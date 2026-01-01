@@ -1,13 +1,14 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RoadmapService } from '../roadmap.service';
 import { ProjectBubbleComponent } from '../project-bubble/project-bubble.component';
 import { ProjectBubble } from '../models/project.model';
+import { ProjectEditModalComponent } from '../project-edit-modal/project-edit-modal.component';
 
 @Component({
   selector: 'app-roadmap',
   standalone: true,
-  imports: [CommonModule, ProjectBubbleComponent],
+  imports: [CommonModule, ProjectBubbleComponent, ProjectEditModalComponent],
   templateUrl: './roadmap.component.html',
   styleUrl: './roadmap.component.css'
 })
@@ -16,6 +17,9 @@ export class RoadmapComponent implements OnInit {
   projects = this.roadmapService.projects;
 
   months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  
+  // State for editing
+  selectedProject = signal<ProjectBubble | null>(null);
   
   // Constants defining the grid dimensions in pixels (must match CSS .roadmap-grid)
   private GRID_WIDTH = 1200;
@@ -63,11 +67,19 @@ export class RoadmapComponent implements OnInit {
 
   /**
    * Calculates the Y position (in pixels) based on the project's value (0-50).
-   * Maps Value 0 to the bottom (0px) and Value 50 to the top (GRID_HEIGHT).
+   * Maps Value 0 to 0px (bottom) and Value 50 to GRID_HEIGHT (top).
    */
   calculateYPosition(value: number): number {
     // Value 0 maps to 0px (bottom), Value 50 maps to 600px (top)
     const normalizedValue = Math.min(value, this.VALUE_RANGE) / this.VALUE_RANGE;
     return normalizedValue * this.GRID_HEIGHT;
+  }
+  
+  openEditModal(project: ProjectBubble): void {
+    this.selectedProject.set(project);
+  }
+  
+  closeEditModal(): void {
+    this.selectedProject.set(null);
   }
 }

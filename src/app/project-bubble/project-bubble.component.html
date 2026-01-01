@@ -5,6 +5,7 @@
   [style.height.px]="size"
   cdkDrag
   (cdkDragEnded)="onDragEnd($event)"
+  (click)="onBubbleClick()"
 >
   <div class="bubble" [style.width.px]="size" [style.height.px]="size">
     <span class="bubble-name">{{ project.name }}</span>
