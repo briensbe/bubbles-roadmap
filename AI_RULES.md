@@ -7,7 +7,7 @@ This is an Angular 17 application using:
 - **Language**: TypeScript
 - **Styling**: CSS
 - **Build Tool**: Angular CLI with Webpack
-- **Package Manager**: npm
+- **Package Manager**: pnpm
 
 ## Architecture
 
