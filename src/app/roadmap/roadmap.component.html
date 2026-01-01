@@ -34,6 +34,7 @@
         [project]="project"
         [initialX]="calculateXPosition(project.startDate)"
         [initialY]="calculateYPosition(project.value)"
+        [style.position]="'absolute'"
         [style.left.px]="calculateXPosition(project.startDate) - (getBubbleSize(project.complexity) / 2)"
         [style.bottom.px]="calculateYPosition(project.value) - (getBubbleSize(project.complexity) / 2)"
       ></app-project-bubble>
