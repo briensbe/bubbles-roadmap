@@ -3,6 +3,10 @@
   cursor: grab;
   transition: transform 0.1s ease-out; /* Smooth movement */
   z-index: 10;
+  /* Ensure the container itself is transparent and matches the bubble size */
+  display: block;
+  padding: 0;
+  margin: 0;
 }
 
 .bubble {
@@ -49,4 +53,18 @@
 .cdk-drag-dragging {
   opacity: 0.8;
   cursor: grabbing;
+}
+
+/* Style for the placeholder element created by CDK when dragging */
+.cdk-drag-placeholder {
+  opacity: 0; /* Hide the placeholder */
+}
+
+/* Style for the element being dragged (the preview) */
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 50%; /* Ensure the preview is also round */
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+              0 8px 10px 1px rgba(0, 0, 0, 0.14),
+              0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
