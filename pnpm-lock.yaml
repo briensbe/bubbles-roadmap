@@ -35,9 +35,6 @@ importers:
       '@angular/router':
         specifier: ^17.3.0
         version: 17.3.12(@angular/common@17.3.12(@angular/core@17.3.12(rxjs@7.8.2)(zone.js@0.14.10))(rxjs@7.8.2))(@angular/core@17.3.12(rxjs@7.8.2)(zone.js@0.14.10))(@angular/platform-browser@17.3.12(@angular/animations@17.3.12(@angular/core@17.3.12(rxjs@7.8.2)(zone.js@0.14.10)))(@angular/common@17.3.12(@angular/core@17.3.12(rxjs@7.8.2)(zone.js@0.14.10))(rxjs@7.8.2))(@angular/core@17.3.12(rxjs@7.8.2)(zone.js@0.14.10)))(rxjs@7.8.2)
-      angular-resizable-element:
-        specifier: ^3.3.6
-        version: 3.4.0(@angular/core@17.3.12(rxjs@7.8.2)(zone.js@0.14.10))
       rxjs:
         specifier: ~7.8.0
         version: 7.8.2
@@ -1728,11 +1725,6 @@ packages:
 
   ajv@8.17.1:
     resolution: {integrity: sha512-B/gBuNg5SiMTrPkC+A2+cW0RszwxYmn6VYxB/inlBStS5nx6xHIt/ehKRhIMhqusl7a8LjQoZnjCs5vhwxOQ1g==}
-
-  angular-resizable-element@3.4.0:
-    resolution: {integrity: sha512-xL5a8FmghzrZmHPy7uwWz98m91gRXgAcdeCRYcK/nD7psXMTYNk5EPmHA0qZTDCIYljhT4h0OKWLvx56NQGfDA==}
-    peerDependencies:
-      '@angular/core': '>=6.0.0'
 
   ansi-colors@4.1.3:
     resolution: {integrity: sha512-/6w/C21Pm1A7aZitlI5Ni/2J6FFQN8i1Cvz3kHABAAbw93v/NlvKdVOqz7CCWz/3iv/JplRSEEZ83XION15ovw==}
@@ -4077,9 +4069,6 @@ packages:
     resolution: {integrity: sha512-NoZ4roiN7LnbKn9QqE1amc9DJfzvZXxF4xDavcOWt1BPkdx+m+0gJuPM+S0vCe7zTJMYUP0R8pO2XMr+Y8oLIg==}
     engines: {node: '>=6'}
 
-  tslib@1.14.1:
-    resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
-
   tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
 
@@ -6331,11 +6320,6 @@ snapshots:
       fast-uri: 3.1.0
       json-schema-traverse: 1.0.0
       require-from-string: 2.0.2
-
-  angular-resizable-element@3.4.0(@angular/core@17.3.12(rxjs@7.8.2)(zone.js@0.14.10)):
-    dependencies:
-      '@angular/core': 17.3.12(rxjs@7.8.2)(zone.js@0.14.10)
-      tslib: 1.14.1
 
   ansi-colors@4.1.3: {}
 
@@ -8932,8 +8916,6 @@ snapshots:
       json5: 2.2.3
       minimist: 1.2.8
       strip-bom: 3.0.0
-
-  tslib@1.14.1: {}
 
   tslib@2.6.2: {}
 

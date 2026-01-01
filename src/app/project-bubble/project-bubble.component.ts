@@ -1,14 +1,13 @@
-import { Component, Input, OnInit, inject, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, inject, Output, EventEmitter, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CdkDrag, CdkDragEnd, DragDropModule } from '@angular/cdk/drag-drop';
+import {  CdkDragEnd, DragDropModule } from '@angular/cdk/drag-drop';
 import { ProjectBubble } from '../models/project.model';
 import { RoadmapService } from '../roadmap.service';
-import { ResizableModule, ResizeEvent } from 'angular-resizable-element';
 
 @Component({
   selector: 'app-project-bubble',
   standalone: true,
-  imports: [CommonModule, DragDropModule, ResizableModule],
+  imports: [CommonModule, DragDropModule],
   templateUrl: './project-bubble.component.html',
   styleUrl: './project-bubble.component.css'
 })
@@ -27,6 +26,12 @@ export class ProjectBubbleComponent implements OnInit {
 
   size: number = 0;
   serviceColorClass: string = '';
+  
+  // Resize tracking
+  isResizing: boolean = false;
+  resizeStartSize: number = 0;
+  resizeStartX: number = 0;
+  resizeStartY: number = 0;
 
   // Configuration for size scaling (0-50 complexity maps to 40px - 120px diameter)
   readonly MIN_SIZE = 40;
@@ -75,13 +80,35 @@ export class ProjectBubbleComponent implements OnInit {
     event.source.reset();
   }
   
-  onResizeEnd(event: ResizeEvent): void {
-    // We only care about the new width (since it's a circle, width == height)
-    const newSize = event.rectangle.width || this.size;
+  onResizeStart(event: MouseEvent): void {
+    this.isResizing = true;
+    this.resizeStartSize = this.size;
+    this.resizeStartX = event.clientX;
+    this.resizeStartY = event.clientY;
+    event.stopPropagation();
+  }
+
+  @HostListener('document:mousemove', ['$event'])
+  onMouseMove(event: MouseEvent): void {
+    if (!this.isResizing) return;
     
-    const newComplexity = this.calculateComplexity(newSize);
+    const deltaX = event.clientX - this.resizeStartX;
+    const deltaY = event.clientY - this.resizeStartY;
+    const delta = Math.max(deltaX, deltaY);
     
-    // Emit the new complexity
+    let newSize = this.resizeStartSize + delta;
+    newSize = Math.max(this.MIN_SIZE, Math.min(this.MAX_SIZE, newSize));
+    
+    this.size = newSize;
+  }
+
+  @HostListener('document:mouseup')
+  onMouseUp(): void {
+    if (!this.isResizing) return;
+    
+    this.isResizing = false;
+    const newComplexity = this.calculateComplexity(this.size);
+    
     this.complexityChange.emit({
       project: this.project,
       newComplexity: newComplexity

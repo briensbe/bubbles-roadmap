@@ -6,20 +6,16 @@
   cdkDrag
   (cdkDragEnded)="onDragEnd($event)"
   (click)="onBubbleClick($event)"
-  
-  mwlResizable
-  [resizeEdges]="{bottom: true, right: true, bottomRight: true}"
-  [enableGhostResize]="true"
-  [minWidth]="MIN_SIZE"
-  [minHeight]="MIN_SIZE"
-  [maxWidth]="MAX_SIZE"
-  [maxHeight]="MAX_SIZE"
-  (resizeEnd)="onResizeEnd($event)"
 >
   <div class="bubble" [style.width.px]="size" [style.height.px]="size">
     <span class="bubble-name">{{ project.name }}</span>
     <span class="bubble-service">{{ project.service }}</span>
-    
-    <!-- ngx-resizable automatically creates handles based on [resizeEdges] -->
   </div>
+  
+  <!-- Resize handle in bottom-right corner -->
+  <div 
+    class="resize-handle" 
+    (mousedown)="onResizeStart($event)"
+    [class.resizing]="isResizing"
+  ></div>
 </div>
