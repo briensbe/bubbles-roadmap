@@ -1,50 +1,82 @@
 .bubble-container {
   position: absolute;
   cursor: grab;
-  transition: transform 0.1s ease-out; /* Smooth movement */
-  z-index: 10;
   /* Ensure the container itself is transparent and matches the bubble size */
   display: block;
   padding: 0;
   margin: 0;
-  
+
+  /* Container for the bubble and labels */
   /* FIX: Make the container itself circular */
-  border-radius: 50%; 
+  border-radius: 50%;
 }
 
 .bubble {
   border-radius: 50%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  color: white;
+  display: block;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, transform 0.2s;
   border: 2px solid rgba(255, 255, 255, 0.5);
-  padding: 5px;
-  position: relative; /* Needed for absolute positioning of handle */
+  position: relative;
 }
 
 .bubble:hover {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-  z-index: 11;
+  transform: scale(1.05);
+}
+
+.bubble-label {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  color: #1a1a1a;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+  transition: transform 0.2s ease;
+  z-index: 20;
+}
+
+.bubble-container:hover .bubble-label {
+  transform: translateX(-50%) translateY(-4px);
+  background: rgba(255, 255, 255, 0.25);
 }
 
 .bubble-name {
-  font-size: 0.8rem;
-  font-weight: bold;
-  line-height: 1.1;
-  max-width: 90%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #1a1a1a;
 }
 
 .bubble-service {
-  font-size: 0.6rem;
-  opacity: 0.8;
+  font-size: 0.7rem;
+  font-weight: 500;
+  opacity: 0.7;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 1px;
+}
+
+/* Tip of the badge */
+.bubble-label::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid rgba(255, 255, 255, 0.3);
 }
 
 /* Resize handle styling */
@@ -86,10 +118,18 @@
 }
 
 /* Color Coding based on Service */
-.finance-bubble { background-color: #3498db; } /* Blue */
-.marketing-bubble { background-color: #2ecc71; } /* Green */
-.it-bubble { background-color: #e74c3c; } /* Red */
-.hr-bubble { background-color: #f39c12; } /* Orange */
+.finance-bubble {
+  background-color: #3498db;
+} /* Blue */
+.marketing-bubble {
+  background-color: #2ecc71;
+} /* Green */
+.it-bubble {
+  background-color: #e74c3c;
+} /* Red */
+.hr-bubble {
+  background-color: #f39c12;
+} /* Orange */
 
 /* Dragging state */
 .cdk-drag-dragging {
@@ -106,7 +146,6 @@
 .cdk-drag-preview {
   box-sizing: border-box;
   border-radius: 50%; /* Ensure the preview is also round */
-  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-              0 8px 10px 1px rgba(0, 0, 0, 0.14),
-              0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14),
+    0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }

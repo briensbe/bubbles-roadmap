@@ -21,6 +21,7 @@ export class RoadmapComponent implements OnInit {
   // State for editing
   selectedProject = signal<ProjectBubble | null>(null);
   isXAxisLocked = signal<boolean>(true);
+  topmostProjectId = signal<number | null>(null);
 
   // Constants defining the grid dimensions in pixels (must match CSS .roadmap-grid)
   private GRID_WIDTH = 1200;

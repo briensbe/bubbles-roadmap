@@ -8,7 +8,9 @@
   (cdkDragEnded)="onDragEnd($event)"
   (dblclick)="onBubbleClick($event)"
 >
-  <div class="bubble" [style.width.px]="size" [style.height.px]="size">
+  <div class="bubble" [style.width.px]="size" [style.height.px]="size"></div>
+
+  <div class="bubble-label" [style.bottom.px]="size + 8">
     <span class="bubble-name">{{ project.name }}</span>
     <span class="bubble-service">{{ project.service }}</span>
   </div>
