@@ -1,20 +1,20 @@
-<div 
-  class="bubble-container" 
+<div
+  class="bubble-container"
   [ngClass]="serviceColorClass"
-  [style.width.px]="size" 
+  [style.width.px]="size"
   [style.height.px]="size"
   cdkDrag
   (cdkDragEnded)="onDragEnd($event)"
-  (click)="onBubbleClick($event)"
+  (dblclick)="onBubbleClick($event)"
 >
   <div class="bubble" [style.width.px]="size" [style.height.px]="size">
     <span class="bubble-name">{{ project.name }}</span>
     <span class="bubble-service">{{ project.service }}</span>
   </div>
-  
+
   <!-- Resize handle in bottom-right corner -->
-  <div 
-    class="resize-handle" 
+  <div
+    class="resize-handle"
     (mousedown)="onResizeStart($event)"
     [class.resizing]="isResizing"
   ></div>
