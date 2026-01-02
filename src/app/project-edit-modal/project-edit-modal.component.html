@@ -1,45 +1,63 @@
 <div class="modal-overlay" (click)="cancel()">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <h3>Edit Project: {{ project.name }}</h3>
-    
+
     <form (ngSubmit)="saveChanges()">
       <div class="form-group">
         <label for="name">Name</label>
-        <input id="name" [(ngModel)]="editedProject.name" name="name" required>
+        <input id="name" [(ngModel)]="editedProject.name" name="name" required />
       </div>
 
       <div class="form-group">
         <label for="service">Service</label>
         <select id="service" [(ngModel)]="editedProject.service" name="service" required>
           @for (service of serviceOptions; track service) {
-            <option [value]="service">{{ service }}</option>
+          <option [value]="service">{{ service }}</option>
           }
         </select>
       </div>
-      
+
       <div class="form-group">
         <label for="startDate">Start Date</label>
         <!-- We use the DatePipe to format the Date object for the input value -->
-        <input 
-          id="startDate" 
-          type="date" 
-          [ngModel]="editedProject.startDate | date:'yyyy-MM-dd'" 
+        <input
+          id="startDate"
+          type="date"
+          [ngModel]="editedProject.startDate | date : 'yyyy-MM-dd'"
           (ngModelChange)="updateStartDate($event)"
-          name="startDate" 
+          name="startDate"
           required
+        />
+      </div>
+
+      <div class="form-group slider-group">
+        <label for="value">Value (Business Points): {{ editedProject.value }} / 500</label>
+        <input
+          id="value"
+          type="range"
+          [(ngModel)]="editedProject.value"
+          name="value"
+          min="0"
+          max="500"
+          required
+        />
+      </div>
+
+      <div class="form-group slider-group">
+        <label for="complexity"
+          >Complexity (Story Points): {{ editedProject.complexity }} / 500</label
         >
+        <input
+          id="complexity"
+          type="range"
+          [(ngModel)]="editedProject.complexity"
+          name="complexity"
+          min="0"
+          max="500"
+          required
+        />
       </div>
 
-      <div class="form-group slider-group">
-        <label for="value">Value (Business Points): {{ editedProject.value }} / 50</label>
-        <input id="value" type="range" [(ngModel)]="editedProject.value" name="value" min="0" max="50" required>
-      </div>
-
-      <div class="form-group slider-group">
-        <label for="complexity">Complexity (Story Points): {{ editedProject.complexity }} / 50</label>
-        <input id="complexity" type="range" [(ngModel)]="editedProject.complexity" name="complexity" min="0" max="50" required>
-      </div>
-      
       <div class="form-actions">
         <button type="button" (click)="cancel()">Cancel</button>
         <button type="submit">Save Changes</button>

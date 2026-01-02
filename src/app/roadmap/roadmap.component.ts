@@ -31,7 +31,7 @@ export class RoadmapComponent implements OnInit {
   // Constants for size scaling (must match ProjectBubbleComponent)
   private MIN_SIZE = 40;
   private MAX_SIZE = 120;
-  private COMPLEXITY_RANGE = 50;
+  private COMPLEXITY_RANGE = 500;
 
   serviceColors = [
     { name: 'Finance', class: 'finance-bubble' },
