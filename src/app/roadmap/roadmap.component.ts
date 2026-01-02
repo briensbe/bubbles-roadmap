@@ -20,6 +20,7 @@ export class RoadmapComponent implements OnInit {
 
   // State for editing
   selectedProject = signal<ProjectBubble | null>(null);
+  isXAxisLocked = signal<boolean>(true);
 
   // Constants defining the grid dimensions in pixels (must match CSS .roadmap-grid)
   private GRID_WIDTH = 1200;
@@ -103,7 +104,9 @@ export class RoadmapComponent implements OnInit {
     const daysInNewMonth = new Date(currentYear, monthIndex + 1, 0).getDate();
     const newDay = Math.max(1, Math.round(dayFraction * daysInNewMonth));
 
-    const newStartDate = new Date(currentYear, monthIndex, newDay);
+    const newStartDate = this.isXAxisLocked()
+      ? project.startDate
+      : new Date(currentYear, monthIndex, newDay);
 
     // Create a temporary project object with updated values
     const updatedProject: ProjectBubble = {

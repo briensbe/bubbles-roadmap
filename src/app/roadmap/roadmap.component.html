@@ -1,51 +1,67 @@
 <div class="roadmap-container">
-  <h2>Project Roadmap Bubble Chart (Click to Edit)</h2>
-  
+  <div class="roadmap-header">
+    <h2>Project Roadmap Bubble Chart</h2>
+
+    <div class="roadmap-controls">
+      <label class="toggle-switch">
+        <input
+          type="checkbox"
+          [checked]="isXAxisLocked()"
+          (change)="isXAxisLocked.set(!isXAxisLocked())"
+        />
+        <span class="slider"></span>
+        <span class="toggle-label">🔒 Lock Timeline (X-Axis)</span>
+      </label>
+    </div>
+  </div>
+
   <div class="roadmap-grid">
-    
     <!-- Y-Axis (Value) -->
     <div class="axis-y-label">Value (Business Points 0-50)</div>
     <div class="axis-y">
       @for (i of [0, 10, 20, 30, 40, 50]; track i) {
-        <div [style.height.%]="100 / 5">
-          {{ i }}
-        </div>
+      <div [style.height.%]="100 / 5">
+        {{ i }}
+      </div>
       }
     </div>
 
     <!-- Grid Lines Y -->
     @for (i of [10, 20, 30, 40]; track i) {
-      <div class="grid-line-y" [style.bottom.%]="i * 2"></div>
+    <div class="grid-line-y" [style.bottom.%]="i * 2"></div>
     }
 
     <!-- Grid Lines X and X-Axis (Timeline) -->
     @for (month of months; track month; let i = $index) {
-      <div class="grid-line-x" [style.left.%]="(i + 1) * (100 / 12)"></div>
+    <div class="grid-line-x" [style.left.%]="(i + 1) * (100 / 12)"></div>
     }
     <div class="axis-x">
       @for (month of months; track month) {
-        <div class="month-label">{{ month }}</div>
+      <div class="month-label">{{ month }}</div>
       }
     </div>
 
     <!-- Bubbles -->
     @for (project of projects(); track project.id) {
-      <app-project-bubble
-        [project]="project"
-        [initialX]="calculateXPosition(project.startDate)"
-        [initialY]="calculateYPosition(project.value)"
-        [style.position]="'absolute'"
-        [style.left.px]="calculateXPosition(project.startDate) - (getBubbleSize(project.complexity) / 2)"
-        [style.bottom.px]="calculateYPosition(project.value) - (getBubbleSize(project.complexity) / 2)"
-        (edit)="openEditModal(project)"
-        (positionChange)="handlePositionChange($event)"
-        (complexityChange)="handleComplexityChange($event)"
-      ></app-project-bubble>
+    <app-project-bubble
+      [project]="project"
+      [initialX]="calculateXPosition(project.startDate)"
+      [initialY]="calculateYPosition(project.value)"
+      [lockXAxis]="isXAxisLocked()"
+      [style.position]="'absolute'"
+      [style.left.px]="
+        calculateXPosition(project.startDate) - getBubbleSize(project.complexity) / 2
+      "
+      [style.bottom.px]="calculateYPosition(project.value) - getBubbleSize(project.complexity) / 2"
+      (edit)="openEditModal(project)"
+      (positionChange)="handlePositionChange($event)"
+      (complexityChange)="handleComplexityChange($event)"
+    ></app-project-bubble>
     }
   </div>
 
   <!-- Legends -->
-  <div style="display: flex; justify-content: center; margin-top: 50px;">
+  <div style="display: flex; justify-content: center; margin-top: 50px">
     <div class="complexity-legend">
       <h4>Complexity (Size) Legend</h4>
       <div class="legend-item">
@@ -61,14 +77,19 @@
         <span>High Complexity (40-50 points)</span>
       </div>
     </div>
-    
+
     <div class="complexity-legend">
       <h4>Service (Color) Legend</h4>
       @for (service of serviceColors; track service.name) {
-        <div class="legend-item">
-          <div class="legend-bubble" [ngClass]="service.class" [style.width.px]="20" [style.height.px]="20"></div>
-          <span>{{ service.name }}</span>
-        </div>
+      <div class="legend-item">
+        <div
+          class="legend-bubble"
+          [ngClass]="service.class"
+          [style.width.px]="20"
+          [style.height.px]="20"
+        ></div>
+        <span>{{ service.name }}</span>
+      </div>
       }
     </div>
   </div>
@@ -76,8 +97,8 @@
 
 <!-- Edit Modal -->
 @if (selectedProject()) {
-  <app-project-edit-modal
-    [project]="selectedProject()!"
-    (close)="closeEditModal()"
-  ></app-project-edit-modal>
+<app-project-edit-modal
+  [project]="selectedProject()!"
+  (close)="closeEditModal()"
+></app-project-edit-modal>
 }

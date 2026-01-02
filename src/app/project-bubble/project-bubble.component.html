@@ -4,6 +4,7 @@
   [style.width.px]="size"
   [style.height.px]="size"
   cdkDrag
+  [cdkDragLockAxis]="axisLock"
   (cdkDragEnded)="onDragEnd($event)"
   (dblclick)="onBubbleClick($event)"
 >
