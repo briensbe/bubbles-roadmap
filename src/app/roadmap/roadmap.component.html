@@ -54,7 +54,7 @@
       "
       [style.bottom.px]="calculateYPosition(project.value) - getBubbleSize(project.complexity) / 2"
       [style.z-index]="topmostProjectId() === project.id ? 100 : 10"
-      (mouseenter)="topmostProjectId.set(project.id)"
+      (hovered)="topmostProjectId.set(project.id)"
       (edit)="openEditModal(project)"
       (positionChange)="handlePositionChange($event)"
       (complexityChange)="handleComplexityChange($event)"

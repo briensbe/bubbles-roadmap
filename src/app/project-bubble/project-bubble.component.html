@@ -7,6 +7,7 @@
   [cdkDragLockAxis]="axisLock"
   (cdkDragEnded)="onDragEnd($event)"
   (dblclick)="onBubbleClick($event)"
+  (mouseenter)="onMouseEnter()"
 >
   <div class="bubble" [style.width.px]="size" [style.height.px]="size"></div>
 

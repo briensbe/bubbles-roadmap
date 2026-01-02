@@ -22,6 +22,7 @@ export class ProjectBubbleComponent implements OnInit {
   @Output() edit = new EventEmitter<ProjectBubble>();
   @Output() positionChange = new EventEmitter<{ project: ProjectBubble, newX: number, newY: number }>();
   @Output() complexityChange = new EventEmitter<{ project: ProjectBubble, newComplexity: number }>();
+  @Output() hovered = new EventEmitter<void>();
 
   roadmapService = inject(RoadmapService);
 
@@ -124,5 +125,9 @@ export class ProjectBubbleComponent implements OnInit {
     // Prevent click event from firing immediately after drag end (detail is 0 for synthetic clicks)
     if (event.detail === 0) return;
     this.edit.emit(this.project);
+  }
+
+  onMouseEnter(): void {
+    this.hovered.emit();
   }
 }
