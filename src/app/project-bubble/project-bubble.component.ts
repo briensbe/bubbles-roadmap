@@ -31,9 +31,8 @@ export class ProjectBubbleComponent implements OnInit {
 
   // Resize tracking
   isResizing: boolean = false;
-  resizeStartSize: number = 0;
-  resizeStartX: number = 0;
-  resizeStartY: number = 0;
+  private bubbleCenterX: number = 0;
+  private bubbleCenterY: number = 0;
 
   // Configuration for size scaling (0-50 complexity maps to 40px - 120px diameter)
   readonly MIN_SIZE = 30;
@@ -88,23 +87,40 @@ export class ProjectBubbleComponent implements OnInit {
 
   onResizeStart(event: MouseEvent): void {
     this.isResizing = true;
-    this.resizeStartSize = this.size;
-    this.resizeStartX = event.clientX;
-    this.resizeStartY = event.clientY;
+
+    // Get the bounding rect of the host element (which is the center point)
+    // or calculate from the bubble container rect.
+    const container = (event.target as HTMLElement).parentElement;
+    if (container) {
+      const rect = container.getBoundingClientRect();
+      this.bubbleCenterX = rect.left + rect.width / 2;
+      this.bubbleCenterY = rect.top + rect.height / 2;
+    }
+
     event.stopPropagation();
+    event.preventDefault(); // Prevent text selection
   }
 
   @HostListener('document:mousemove', ['$event'])
   onMouseMove(event: MouseEvent): void {
     if (!this.isResizing) return;
 
-    const deltaX = event.clientX - this.resizeStartX;
-    const deltaY = event.clientY - this.resizeStartY;
-    const delta = Math.max(deltaX, deltaY);
+    // Distance from mouse to center
+    const dx = event.clientX - this.bubbleCenterX;
+    const dy = event.clientY - this.bubbleCenterY;
 
-    let newSize = this.resizeStartSize + delta * 2;
+    // In a symmetric resize from center, the new diameter is 2 * distance to edge
+    // We use the maximum of dx and dy distance to allow diagonal-ish dragging
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    // Since we want the bubble to be a circle, and the mouse is at the edge (the handle),
+    // the distance represents the radius.
+    // However, to keep it feeling "natural" with corner handles, we use a 1.414 (sqrt2) factor
+    // if we wanted it to follow the corner exactly, but here let's just use the radius * 2.
+    // Actually, simple radius * 2 is the most mathematically correct for "distance from center".
+    let newSize = distance * 2;
+
     newSize = Math.max(this.MIN_SIZE, Math.min(this.MAX_SIZE, newSize));
-
     this.size = newSize;
   }
 

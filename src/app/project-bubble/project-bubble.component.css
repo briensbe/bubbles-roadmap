@@ -82,8 +82,8 @@
 /* Style de base commun à tous les handles */
 .resize-handle {
   position: absolute;
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   background: rgba(0, 255, 255, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.7);
   opacity: 0;
