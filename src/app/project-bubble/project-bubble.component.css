@@ -80,6 +80,62 @@
   border-top: 6px solid rgba(255, 255, 255, 0.3);
 }
 
+.bubble-info {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  /*text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);*/
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  width: 100%;
+  text-align: center;
+}
+
+.bubble-container:hover .bubble-info,
+.bubble-container.selected .bubble-info {
+  opacity: 1;
+}
+
+.info-row {
+  display: flex;
+  gap: 4px;
+  font-size: 0.75rem;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.info-label {
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.info-value {
+  font-weight: 600;
+}
+
+.badge-info {
+  font-size: 0.65rem;
+  font-weight: 700;
+  margin-top: 4px;
+  opacity: 0.9;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  padding-top: 2px;
+}
+
+.info-sep {
+  opacity: 0.3;
+}
+
 /* Mes modifs*/
 /* Style de base commun à tous les handles */
 .resize-handle {

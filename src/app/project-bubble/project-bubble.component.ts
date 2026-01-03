@@ -41,6 +41,22 @@ export class ProjectBubbleComponent implements OnInit {
   readonly MIN_SIZE = 30;
   readonly MAX_SIZE = 200;
 
+  // Thresholds for displaying info
+  readonly FULL_LABEL_THRESHOLD = 90;
+  readonly SHORT_LABEL_THRESHOLD = 50;
+
+  get displayInfoInBubble(): boolean {
+    return this.size >= this.SHORT_LABEL_THRESHOLD;
+  }
+
+  get useFullLabelsInBubble(): boolean {
+    return this.size >= this.FULL_LABEL_THRESHOLD;
+  }
+
+  get displayInfoInBadge(): boolean {
+    return this.size < this.SHORT_LABEL_THRESHOLD;
+  }
+
   get axisLock(): any {
     return this.lockXAxis ? 'y' : undefined;
   }

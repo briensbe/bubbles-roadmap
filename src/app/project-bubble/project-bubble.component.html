@@ -13,11 +13,27 @@
   (dblclick)="onBubbleClick($event)"
   (mouseenter)="onMouseEnter()"
 >
-  <div class="bubble" [style.width.px]="size" [style.height.px]="size"></div>
+  <div class="bubble" [style.width.px]="size" [style.height.px]="size">
+    <div class="bubble-info" *ngIf="displayInfoInBubble">
+      <div class="info-row">
+        <span class="info-label">{{ useFullLabelsInBubble ? 'Valeur' : 'V' }}:</span>
+        <span class="info-value">{{ project.value }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">{{ useFullLabelsInBubble ? 'Complexité' : 'C' }}:</span>
+        <span class="info-value">{{ project.complexity }}</span>
+      </div>
+    </div>
+  </div>
 
   <div class="bubble-label" [style.bottom.px]="size + 8">
     <span class="bubble-name">{{ project.name }}</span>
     <span class="bubble-service">{{ project.service }}</span>
+    <div class="badge-info" *ngIf="displayInfoInBadge">
+      <span>V: {{ project.value }}</span>
+      <span class="info-sep">|</span>
+      <span>C: {{ project.complexity }}</span>
+    </div>
   </div>
 
   <!-- Resize handle in bottom-right corner -->
