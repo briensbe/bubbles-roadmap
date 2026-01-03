@@ -1,0 +1,60 @@
+<div class="modal-overlay" (click)="cancel()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <div class="header-title">
+        <h3>Excel Import / Export</h3>
+        <p class="subtitle">Download or upload your project list as Excel.</p>
+      </div>
+      <button class="close-btn" (click)="cancel()">
+        <lucide-icon [name]="X" class="icon-md"></lucide-icon>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="section-card">
+        <h4>Excel support</h4>
+        <p>Download your project list as Excel (.xlsx) or upload a new one.</p>
+        <div class="action-grid">
+          <button class="btn btn-outline" (click)="exportToExcel()">
+            <lucide-icon [name]="FileSpreadsheet" class="icon-sm"></lucide-icon>
+            Export to Excel
+          </button>
+          <label class="btn btn-outline file-label">
+            <lucide-icon [name]="FileUp" class="icon-sm"></lucide-icon>
+            Import from Excel
+            <input
+              type="file"
+              (change)="onFileSelected($event)"
+              accept=".xlsx, .xls, .csv"
+              hidden
+            />
+          </label>
+        </div>
+      </div>
+
+      <!-- Alerts -->
+      <div *ngIf="errorMessage" class="alert alert-error">
+        <lucide-icon [name]="AlertCircle" class="icon-sm"></lucide-icon>
+        <span>{{ errorMessage }}</span>
+      </div>
+      <div *ngIf="successMessage" class="alert alert-success">
+        <lucide-icon [name]="CheckCircle" class="icon-sm"></lucide-icon>
+        <span>{{ successMessage }}</span>
+      </div>
+
+      <div *ngIf="importedProjects" class="preview-info">
+        <p>{{ importedProjects.length }} projects found in file.</p>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <div class="footer-actions">
+        <button class="btn btn-secondary" (click)="cancel()">Cancel</button>
+        <button class="btn btn-primary" (click)="saveChanges()" [disabled]="!importedProjects">
+          <lucide-icon [name]="Save" class="icon-sm"></lucide-icon>
+          Update Projects
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

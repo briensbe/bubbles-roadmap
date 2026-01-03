@@ -4,14 +4,16 @@ import { RoadmapService } from '../roadmap.service';
 import { ROADMAP_CONFIG } from '../models/project.constants';
 import { ProjectBubble } from '../models/project.model';
 import { ProjectEditModalComponent } from '../project-edit-modal/project-edit-modal.component';
-import { ProjectImportExportModalComponent } from '../project-import-export-modal/project-import-export-modal.component';
+import { ProjectJsonModalComponent } from '../project-json-modal/project-json-modal.component';
+import { ProjectExcelModalComponent } from '../project-excel-modal/project-excel-modal.component';
 import {
   LucideAngularModule,
   Pencil,
   Trash2,
   PlusCircle,
   RefreshCw,
-  FileJson
+  FileJson,
+  FileSpreadsheet
 } from 'lucide-angular';
 
 @Component({
@@ -21,7 +23,8 @@ import {
     CommonModule,
     DatePipe,
     ProjectEditModalComponent,
-    ProjectImportExportModalComponent,
+    ProjectJsonModalComponent,
+    ProjectExcelModalComponent,
     LucideAngularModule
   ],
   templateUrl: './project-list.component.html',
@@ -39,10 +42,12 @@ export class ProjectListComponent {
   readonly PlusCircle = PlusCircle;
   readonly RefreshCw = RefreshCw;
   readonly FileJson = FileJson;
+  readonly FileSpreadsheet = FileSpreadsheet;
 
   // State for editing
   editingProject = signal<ProjectBubble | null>(null);
-  isImportExportModalOpen = signal<boolean>(false);
+  isJsonModalOpen = signal<boolean>(false);
+  isExcelModalOpen = signal<boolean>(false);
 
   openEditModal(project: ProjectBubble | null): void {
     if (project) {

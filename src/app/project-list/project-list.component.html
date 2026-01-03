@@ -2,9 +2,13 @@
   <div class="list-header">
     <h2>Project List View</h2>
     <div class="list-actions">
-      <button class="btn btn-ghost" (click)="isImportExportModalOpen.set(true)">
+      <button class="btn btn-ghost" (click)="isJsonModalOpen.set(true)">
         <lucide-icon [name]="FileJson" class="icon-sm"></lucide-icon>
-        Import / Export
+        JSON
+      </button>
+      <button class="btn btn-ghost" (click)="isExcelModalOpen.set(true)">
+        <lucide-icon [name]="FileSpreadsheet" class="icon-sm"></lucide-icon>
+        Excel
       </button>
       <button class="btn btn-secondary" (click)="restoreDefaults()">
         <lucide-icon [name]="RefreshCw" class="icon-sm"></lucide-icon>
@@ -64,10 +68,18 @@
 ></app-project-edit-modal>
 }
 
-<!-- Import / Export Modal -->
-@if (isImportExportModalOpen()) {
-<app-project-import-export-modal
+<!-- JSON Modal -->
+@if (isJsonModalOpen()) {
+<app-project-json-modal
   [projects]="projects()"
-  (close)="isImportExportModalOpen.set(false)"
-></app-project-import-export-modal>
+  (close)="isJsonModalOpen.set(false)"
+></app-project-json-modal>
+}
+
+<!-- Excel Modal -->
+@if (isExcelModalOpen()) {
+<app-project-excel-modal
+  [projects]="projects()"
+  (close)="isExcelModalOpen.set(false)"
+></app-project-excel-modal>
 }

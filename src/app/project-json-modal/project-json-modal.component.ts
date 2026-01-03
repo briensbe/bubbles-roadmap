@@ -13,19 +13,20 @@ import {
 } from 'lucide-angular';
 
 @Component({
-    selector: 'app-project-import-export-modal',
+    selector: 'app-project-json-modal',
     standalone: true,
     imports: [CommonModule, FormsModule, LucideAngularModule],
-    templateUrl: './project-import-export-modal.component.html',
-    styleUrl: './project-import-export-modal.component.css'
+    templateUrl: './project-json-modal.component.html',
+    styleUrl: './project-json-modal.component.css'
 })
-export class ProjectImportExportModalComponent implements OnInit {
+export class ProjectJsonModalComponent implements OnInit {
     @Input({ required: true }) projects!: ProjectBubble[];
     @Output() close = new EventEmitter<void>();
 
     roadmapService = inject(RoadmapService);
 
     jsonContent: string = '';
+    initialJsonContent: string = '';
     errorMessage: string | null = null;
     successMessage: string | null = null;
 
@@ -39,6 +40,7 @@ export class ProjectImportExportModalComponent implements OnInit {
     ngOnInit(): void {
         // Stringify current projects with pretty printing
         this.jsonContent = JSON.stringify(this.projects, null, 2);
+        this.initialJsonContent = this.jsonContent;
     }
 
     copyToClipboard(): void {
@@ -61,18 +63,7 @@ export class ProjectImportExportModalComponent implements OnInit {
             }
 
             // Basic structure validation
-            const isValid = parsedData.every(p =>
-                typeof p.id === 'number' &&
-                typeof p.name === 'string' &&
-                ['Finance', 'Marketing', 'IT', 'HR'].includes(p.service) &&
-                typeof p.complexity === 'number' &&
-                typeof p.value === 'number' &&
-                p.startDate !== undefined
-            );
-
-            if (!isValid) {
-                throw new Error('Invalid project structure. Please check the fields (id, name, service, complexity, value, startDate).');
-            }
+            this.checkData(parsedData);
 
             // Check for ID uniqueness
             this.checkIDUnicity(parsedData);
@@ -87,6 +78,21 @@ export class ProjectImportExportModalComponent implements OnInit {
         } catch (e: any) {
             this.errorMessage = 'Invalid JSON: ' + e.message;
         }
+    }
+
+    private checkData(parsedData: any[]): void {
+        parsedData.forEach((p, index) => {
+            const prefix = `Project at index ${index} (ID: ${p.id || 'N/A'}): `;
+            if (typeof p.id !== 'number') throw new Error(`${prefix}Field "id" must be a number.`);
+            if (typeof p.name !== 'string') throw new Error(`${prefix}Field "name" must be a string.`);
+            if (!['Finance', 'Marketing', 'IT', 'HR'].includes(p.service)) {
+                throw new Error(`${prefix}Field "service" must be one of: Finance, Marketing, IT, HR.`);
+            }
+
+            if (typeof p.complexity !== 'number') throw new Error(`${prefix}Field "complexity" must be a number.`);
+            if (typeof p.value !== 'number') throw new Error(`${prefix}Field "value" must be a number.`);
+            if (p.startDate === undefined) throw new Error(`${prefix}Field "startDate" is required.`);
+        });
     }
 
     private checkIDUnicity(parsedData: any[]) {
@@ -109,6 +115,9 @@ export class ProjectImportExportModalComponent implements OnInit {
     }
 
     cancel(): void {
+        if (this.jsonContent !== this.initialJsonContent && !confirm('You have unsaved changes in the JSON data. Are you sure you want to close?')) {
+            return;
+        }
         this.close.emit();
     }
 }

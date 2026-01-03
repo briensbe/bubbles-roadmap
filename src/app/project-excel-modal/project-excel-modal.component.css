@@ -13,11 +13,10 @@
   padding: 20px;
 }
 
-.modal-content.large {
+.modal-content {
   background: white;
   width: 100%;
-  max-width: 800px;
-  max-height: 90vh;
+  max-width: 500px;
   border-radius: 16px;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   display: flex;
@@ -79,38 +78,35 @@
 
 .modal-body {
   padding: 24px;
-  flex: 1;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.json-container {
-  flex: 1;
-  min-height: 300px;
-  display: flex;
-}
-
-textarea {
-  flex: 1;
-  width: 100%;
-  padding: 16px;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
-  font-family: 'Fira Code', 'Courier New', Courier, monospace;
-  font-size: 0.9rem;
-  color: #1f2937;
+.section-card {
   background: #f8fafc;
-  resize: none;
-  line-height: 1.5;
-  transition: border-color 0.2s;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
 }
 
-textarea:focus {
-  outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+.section-card h4 {
+  margin: 0 0 8px 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.section-card p {
+  margin: 0 0 16px 0;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.action-grid {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .alert {
@@ -134,12 +130,18 @@ textarea:focus {
   border: 1px solid #bbf7d0;
 }
 
+.preview-info {
+  font-size: 0.875rem;
+  color: #4b5563;
+  padding: 0 4px;
+}
+
 .modal-footer {
   padding: 16px 24px;
   border-top: 1px solid #e5e7eb;
   background: #f9fafb;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
 }
 
@@ -162,12 +164,17 @@ textarea:focus {
 }
 
 .btn-primary {
-  background: #3b82f6;
+  background: #007bff;
   color: white;
 }
 
-.btn-primary:hover {
-  background: #2563eb;
+.btn-primary:hover:not(:disabled) {
+  background: #0056b3;
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .btn-secondary {
@@ -180,14 +187,19 @@ textarea:focus {
   background: #f3f4f6;
 }
 
-.btn-ghost {
-  background: transparent;
-  color: #4b5563;
+.btn-outline {
+  background: white;
+  border: 1px solid #cbd5e1;
+  color: #334155;
 }
 
-.btn-ghost:hover {
-  background: #f3f4f6;
-  color: #111827;
+.btn-outline:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.file-label {
+  cursor: pointer;
 }
 
 .icon-sm {
