@@ -18,8 +18,9 @@ export class RoadmapComponent implements OnInit {
 
   months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-  // State for editing
-  selectedProject = signal<ProjectBubble | null>(null);
+  // State for editing and selection
+  activeProject = signal<ProjectBubble | null>(null);
+  editingProject = signal<ProjectBubble | null>(null);
   isXAxisLocked = signal<boolean>(true);
   topmostProjectId = signal<number | null>(null);
 
@@ -70,11 +71,27 @@ export class RoadmapComponent implements OnInit {
   }
 
   openEditModal(project: ProjectBubble): void {
-    this.selectedProject.set(project);
+    this.editingProject.set(project);
+    // When editing, also make it the active (visually selected) project
+    this.activeProject.set(project);
   }
 
   closeEditModal(): void {
-    this.selectedProject.set(null);
+    this.editingProject.set(null);
+  }
+
+  /**
+   * Selects a project (e.g., on single click) to persist hover-like styles.
+   */
+  selectProject(project: ProjectBubble): void {
+    this.activeProject.set(project);
+  }
+
+  /**
+   * Deselects the current project (e.g., when clicking the background).
+   */
+  deselectProject(): void {
+    this.activeProject.set(null);
   }
 
   /**
@@ -110,6 +127,9 @@ export class RoadmapComponent implements OnInit {
 
     // Update the project directly in the service
     this.roadmapService.updateProject(updatedProject);
+
+    // Maintain visual selection of the moved project
+    this.activeProject.set(updatedProject);
   }
 
   /**
@@ -126,5 +146,8 @@ export class RoadmapComponent implements OnInit {
 
     // Update the project directly in the service
     this.roadmapService.updateProject(updatedProject);
+
+    // Maintain visual selection
+    this.activeProject.set(updatedProject);
   }
 }

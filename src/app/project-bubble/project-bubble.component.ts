@@ -13,6 +13,7 @@ import { RoadmapService } from '../roadmap.service';
 })
 export class ProjectBubbleComponent implements OnInit {
   @Input({ required: true }) project!: ProjectBubble;
+  @Input() isSelected: boolean = false;
   @Input() lockXAxis: boolean = false;
 
   // Inputs for initial positioning (handled by parent component)
@@ -20,6 +21,7 @@ export class ProjectBubbleComponent implements OnInit {
   @Input({ required: true }) initialY!: number;
 
   @Output() edit = new EventEmitter<ProjectBubble>();
+  @Output() clickSelection = new EventEmitter<ProjectBubble>();
   @Output() positionChange = new EventEmitter<{ project: ProjectBubble, newX: number, newY: number }>();
   @Output() complexityChange = new EventEmitter<{ project: ProjectBubble, newComplexity: number }>();
   @Output() hovered = new EventEmitter<void>();
@@ -141,6 +143,12 @@ export class ProjectBubbleComponent implements OnInit {
     // Prevent click event from firing immediately after drag end (detail is 0 for synthetic clicks)
     if (event.detail === 0) return;
     this.edit.emit(this.project);
+  }
+
+  onSingleClick(event: MouseEvent): void {
+    if (event.detail === 0) return;
+    event.stopPropagation();
+    this.clickSelection.emit(this.project);
   }
 
   onMouseEnter(): void {

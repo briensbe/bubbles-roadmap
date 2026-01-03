@@ -15,7 +15,7 @@
     </div>
   </div>
 
-  <div class="roadmap-grid">
+  <div class="roadmap-grid" (click)="deselectProject()">
     <!-- Y-Axis (Value) -->
     <div class="axis-y-label">Value (Business Points 0-50)</div>
     <div class="axis-y">
@@ -45,6 +45,7 @@
     @for (project of projects(); track project.id) {
     <app-project-bubble
       [project]="project"
+      [isSelected]="activeProject()?.id === project.id"
       [initialX]="calculateXPosition(project.startDate)"
       [initialY]="calculateYPosition(project.value)"
       [lockXAxis]="isXAxisLocked()"
@@ -53,6 +54,7 @@
       [style.bottom.px]="calculateYPosition(project.value)"
       [style.z-index]="topmostProjectId() === project.id ? 100 : 10"
       (hovered)="topmostProjectId.set(project.id)"
+      (clickSelection)="selectProject($event)"
       (edit)="openEditModal(project)"
       (positionChange)="handlePositionChange($event)"
       (complexityChange)="handleComplexityChange($event)"
@@ -96,9 +98,9 @@
 </div>
 
 <!-- Edit Modal -->
-@if (selectedProject()) {
+@if (editingProject()) {
 <app-project-edit-modal
-  [project]="selectedProject()!"
+  [project]="editingProject()!"
   (close)="closeEditModal()"
 ></app-project-edit-modal>
 }

@@ -1,6 +1,7 @@
 <div
   class="bubble-container"
   [ngClass]="serviceColorClass"
+  [class.selected]="isSelected"
   [style.width.px]="size"
   [style.height.px]="size"
   [style.left.px]="-size / 2"
@@ -8,6 +9,7 @@
   cdkDrag
   [cdkDragLockAxis]="axisLock"
   (cdkDragEnded)="onDragEnd($event)"
+  (click)="onSingleClick($event)"
   (dblclick)="onBubbleClick($event)"
   (mouseenter)="onMouseEnter()"
 >

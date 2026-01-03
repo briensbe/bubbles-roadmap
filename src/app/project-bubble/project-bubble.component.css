@@ -20,7 +20,8 @@
   position: relative;
 }
 
-.bubble:hover {
+.bubble:hover,
+.bubble-container.selected .bubble {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
   transform: scale(1.05);
 }
@@ -45,7 +46,8 @@
   z-index: 20;
 }
 
-.bubble-container:hover .bubble-label {
+.bubble-container:hover .bubble-label,
+.bubble-container.selected .bubble-label {
   transform: translateX(-50%) translateY(-4px);
   background: rgba(255, 255, 255, 0.25);
 }
@@ -91,8 +93,9 @@
   z-index: 10;
 }
 
-/* Affichage au survol du parent */
+/* Affichage au survol du parent ou si sélectionné */
 .bubble-container:hover .resize-handle,
+.bubble-container.selected .resize-handle,
 .resize-handle.resizing {
   opacity: 1;
 }
