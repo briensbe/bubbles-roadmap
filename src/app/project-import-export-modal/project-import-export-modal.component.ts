@@ -75,11 +75,8 @@ export class ProjectImportExportModalComponent implements OnInit {
             }
 
             // Check for ID uniqueness
-            const ids = parsedData.map(p => p.id);
-            const hasDuplicates = ids.some((id, index) => ids.indexOf(id) !== index);
-            if (hasDuplicates) {
-                throw new Error('Duplicate project IDs found. Each project must have a unique ID.');
-            }
+            this.checkIDUnicity(parsedData);
+
 
             this.roadmapService.replaceProjects(parsedData);
             this.successMessage = 'Projects imported successfully!';
@@ -89,6 +86,25 @@ export class ProjectImportExportModalComponent implements OnInit {
             }, 1500);
         } catch (e: any) {
             this.errorMessage = 'Invalid JSON: ' + e.message;
+        }
+    }
+
+    private checkIDUnicity(parsedData: any[]) {
+        const ids = parsedData.map(p => p.id);
+
+        const seen = new Set();
+        const duplicates = new Set();
+
+        for (const id of ids) {
+            if (seen.has(id)) {
+                duplicates.add(id);
+            } else {
+                seen.add(id);
+            }
+        }
+
+        if (duplicates.size > 0) {
+            throw new Error(`Duplicate project IDs found: ${Array.from(duplicates).join(', ')}`);
         }
     }
 
