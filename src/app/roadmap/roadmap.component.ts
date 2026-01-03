@@ -5,6 +5,8 @@ import { ProjectBubbleComponent } from '../project-bubble/project-bubble.compone
 import { ProjectBubble } from '../models/project.model';
 import { ProjectEditModalComponent } from '../project-edit-modal/project-edit-modal.component';
 
+const VALUE_RANGE = 650; // Visual range for Y axis mapping
+const MAX_BUSINESS_VALUE = 500; // Maximum value for Business Value
 @Component({
   selector: 'app-roadmap',
   standalone: true,
@@ -16,6 +18,10 @@ export class RoadmapComponent implements OnInit {
   roadmapService = inject(RoadmapService);
   projects = this.roadmapService.projects;
 
+  // Expose constants to template
+  readonly MAX_BUSINESS_VALUE = MAX_BUSINESS_VALUE;
+  readonly VALUE_RANGE = VALUE_RANGE;
+
   months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
   // State for editing and selection
@@ -24,10 +30,23 @@ export class RoadmapComponent implements OnInit {
   isXAxisLocked = signal<boolean>(true);
   topmostProjectId = signal<number | null>(null);
 
+  /**
+   * Generates Y-axis ticks based on VALUE_RANGE.
+   * Returns an array of numbers (e.g., [0, 100, 200, 300, 400, 500, 600])
+   */
+  get yAxisTicks(): number[] {
+    const ticks = [];
+    const step = 100;
+    for (let i = 0; i <= VALUE_RANGE; i += step) {
+      ticks.push(i);
+    }
+    return ticks;
+  }
+
   // Constants defining the grid dimensions in pixels (must match CSS .roadmap-grid)
   private GRID_WIDTH = 1200;
   private GRID_HEIGHT = 600;
-  private VALUE_RANGE = 50; // Max value for Y axis
+
 
   serviceColors = [
     { name: 'Finance', class: 'finance-bubble' },
@@ -65,8 +84,8 @@ export class RoadmapComponent implements OnInit {
    * Maps Value 0 to 0px (bottom) and Value 50 to GRID_HEIGHT (top).
    */
   calculateYPosition(value: number): number {
-    // Value 0 maps to 0px (bottom), Value 50 maps to 600px (top)
-    const normalizedValue = Math.min(value, this.VALUE_RANGE) / this.VALUE_RANGE;
+    // Value 0 maps to 0px (bottom), Value 650 maps to 600px (top)
+    const normalizedValue = Math.min(value, VALUE_RANGE) / VALUE_RANGE;
     return normalizedValue * this.GRID_HEIGHT;
   }
 
@@ -102,7 +121,9 @@ export class RoadmapComponent implements OnInit {
 
     // 1. Calculate new Value (Y position)
     const normalizedValue = Math.max(0, Math.min(newY, this.GRID_HEIGHT)) / this.GRID_HEIGHT;
-    const newValue = Math.round(normalizedValue * this.VALUE_RANGE);
+    // Map pixels to logical range (0-650), then clamp the actual data value to 500
+    const calculatedValue = Math.round(normalizedValue * VALUE_RANGE);
+    const newValue = Math.min(MAX_BUSINESS_VALUE, calculatedValue); // on bloque à 500 max 
 
     // 2. Calculate new Start Date (X position)
     const normalizedTime = Math.max(0, Math.min(newX, this.GRID_WIDTH)) / this.GRID_WIDTH; // 0 to 1

@@ -17,19 +17,19 @@
 
   <div class="roadmap-grid" (click)="deselectProject()">
     <!-- Y-Axis (Value) -->
-    <div class="axis-y-label">Value (Business Points 0-50)</div>
+    <div class="axis-y-label">Value (Max {{ MAX_BUSINESS_VALUE }} / Scale {{ VALUE_RANGE }})</div>
     <div class="axis-y">
-      @for (i of [0, 10, 20, 30, 40, 50]; track i) {
-      <div [style.height.%]="100 / 5">
+      @for (i of yAxisTicks; track i) {
+      <div [style.bottom.%]="(i / VALUE_RANGE) * 100">
         {{ i }}
       </div>
       }
     </div>
 
     <!-- Grid Lines Y -->
-    @for (i of [10, 20, 30, 40]; track i) {
-    <div class="grid-line-y" [style.bottom.%]="i * 2"></div>
-    }
+    @for (i of yAxisTicks; track i) { @if (i > 0) {
+    <div class="grid-line-y" [style.bottom.%]="(i / VALUE_RANGE) * 100"></div>
+    } }
 
     <!-- Grid Lines X and X-Axis (Timeline) -->
     @for (month of months; track month; let i = $index) {

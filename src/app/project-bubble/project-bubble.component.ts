@@ -36,10 +36,10 @@ export class ProjectBubbleComponent implements OnInit {
   private bubbleCenterX: number = 0;
   private bubbleCenterY: number = 0;
 
-  // Configuration for size scaling (0-50 complexity maps to 40px - 120px diameter)
+  // Configuration for size scaling (0-500 complexity maps to 40px - 120px diameter)
   readonly MIN_SIZE = 30;
   readonly MAX_SIZE = 200;
-  private COMPLEXITY_RANGE = 500;
+  readonly COMPLEXITY_RANGE = 500;
 
   get axisLock(): any {
     return this.lockXAxis ? 'y' : undefined;

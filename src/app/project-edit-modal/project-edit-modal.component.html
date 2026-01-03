@@ -31,21 +31,23 @@
       </div>
 
       <div class="form-group slider-group">
-        <label for="value">Value (Business Points): {{ editedProject.value }} / 500</label>
+        <label for="value"
+          >Value (Business Points): {{ editedProject.value }} / {{ MAX_BUSINESS_VALUE }}</label
+        >
         <input
           id="value"
           type="range"
           [(ngModel)]="editedProject.value"
           name="value"
           min="0"
-          max="500"
+          max="{{ MAX_BUSINESS_VALUE }}"
           required
         />
       </div>
 
       <div class="form-group slider-group">
         <label for="complexity"
-          >Complexity (Story Points): {{ editedProject.complexity }} / 500</label
+          >Complexity (Story Points): {{ editedProject.complexity }} / {{ MAX_COMPLEXITY }}</label
         >
         <input
           id="complexity"
@@ -53,7 +55,7 @@
           [(ngModel)]="editedProject.complexity"
           name="complexity"
           min="0"
-          max="500"
+          max="{{ MAX_COMPLEXITY }}"
           required
         />
       </div>

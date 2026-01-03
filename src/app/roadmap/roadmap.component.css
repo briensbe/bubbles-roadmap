@@ -89,17 +89,24 @@ input:checked + .slider:before {
   top: 0;
   height: 100%;
   width: 50px;
-  display: flex;
-  flex-direction: column-reverse; /* Value 0 at bottom, 50 at top */
-  justify-content: space-between;
   padding: 0 5px;
   font-size: 0.8rem;
   color: #555;
 }
 
+.axis-y div {
+  position: absolute;
+  width: 100%;
+  height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  overflow: visible;
+}
+
 .axis-y-label {
   position: absolute;
-  left: -100px;
+  left: -150px;
   top: 50%;
   transform: rotate(-90deg) translateY(-50%);
   font-weight: bold;

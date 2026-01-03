@@ -16,12 +16,17 @@ export class ProjectEditModalComponent implements OnInit {
   @Output() close = new EventEmitter<void>();
 
   roadmapService = inject(RoadmapService);
-  
+
   // Local state for form binding
   editedProject: ProjectBubble = {} as ProjectBubble;
-  
+
   // Available options for Service dropdown
   serviceOptions: ProjectBubble['service'][] = ['Finance', 'Marketing', 'IT', 'HR'];
+
+  // Maximum value for Business Value (aligned with RoadmapComponent)
+  readonly MAX_BUSINESS_VALUE = 500;
+  // Maximum value for Complexity (aligned with RoadmapComponent)
+  readonly MAX_COMPLEXITY = 500;
 
   ngOnInit(): void {
     // Create a deep copy of the project for editing

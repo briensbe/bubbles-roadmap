@@ -6,11 +6,11 @@ import { ProjectBubble } from './models/project.model';
 })
 export class RoadmapService {
   private projectsSource = signal<ProjectBubble[]>([
-    { id: 1, name: 'ERP Migration', service: 'Finance', complexity: 45, value: 48, startDate: new Date(2026, 4, 15) }, // May
-    { id: 2, name: 'Website Redesign', service: 'Marketing', complexity: 20, value: 35, startDate: new Date(2026, 6, 1) }, // July
-    { id: 3, name: 'Cloud Security Audit', service: 'IT', complexity: 30, value: 15, startDate: new Date(2026, 8, 10) }, // September
-    { id: 4, name: 'Recruitment Portal', service: 'HR', complexity: 10, value: 25, startDate: new Date(2026, 5, 20) }, // June
-    { id: 5, name: 'Q3 Budget Planning', service: 'Finance', complexity: 5, value: 40, startDate: new Date(2026, 7, 5) }, // August
+    { id: 1, name: 'ERP Migration', service: 'Finance', complexity: 450, value: 480, startDate: new Date(2026, 4, 15) }, // May
+    { id: 2, name: 'Website Redesign', service: 'Marketing', complexity: 200, value: 350, startDate: new Date(2026, 6, 1) }, // July
+    { id: 3, name: 'Cloud Security Audit', service: 'IT', complexity: 300, value: 150, startDate: new Date(2026, 8, 10) }, // September
+    { id: 4, name: 'Recruitment Portal', service: 'HR', complexity: 100, value: 250, startDate: new Date(2026, 5, 20) }, // June
+    { id: 5, name: 'Q3 Budget Planning', service: 'Finance', complexity: 50, value: 400, startDate: new Date(2026, 7, 5) }, // August
   ]);
 
   readonly projects: Signal<ProjectBubble[]> = this.projectsSource.asReadonly();
