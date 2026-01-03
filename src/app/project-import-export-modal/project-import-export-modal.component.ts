@@ -74,6 +74,13 @@ export class ProjectImportExportModalComponent implements OnInit {
                 throw new Error('Invalid project structure. Please check the fields (id, name, service, complexity, value, startDate).');
             }
 
+            // Check for ID uniqueness
+            const ids = parsedData.map(p => p.id);
+            const hasDuplicates = ids.some((id, index) => ids.indexOf(id) !== index);
+            if (hasDuplicates) {
+                throw new Error('Duplicate project IDs found. Each project must have a unique ID.');
+            }
+
             this.roadmapService.replaceProjects(parsedData);
             this.successMessage = 'Projects imported successfully!';
             setTimeout(() => {
