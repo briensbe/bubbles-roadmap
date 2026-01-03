@@ -4,9 +4,8 @@ import { RoadmapService } from '../roadmap.service';
 import { ProjectBubbleComponent } from '../project-bubble/project-bubble.component';
 import { ProjectBubble } from '../models/project.model';
 import { ProjectEditModalComponent } from '../project-edit-modal/project-edit-modal.component';
+import { ROADMAP_CONFIG } from '../models/project.constants';
 
-const VALUE_RANGE = 650; // Visual range for Y axis mapping
-const MAX_BUSINESS_VALUE = 500; // Maximum value for Business Value
 @Component({
   selector: 'app-roadmap',
   standalone: true,
@@ -18,9 +17,8 @@ export class RoadmapComponent implements OnInit {
   roadmapService = inject(RoadmapService);
   projects = this.roadmapService.projects;
 
-  // Expose constants to template
-  readonly MAX_BUSINESS_VALUE = MAX_BUSINESS_VALUE;
-  readonly VALUE_RANGE = VALUE_RANGE;
+  // Expose configuration to template
+  readonly CONFIG = ROADMAP_CONFIG;
 
   months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -37,7 +35,7 @@ export class RoadmapComponent implements OnInit {
   get yAxisTicks(): number[] {
     const ticks = [];
     const step = 100;
-    for (let i = 0; i <= VALUE_RANGE; i += step) {
+    for (let i = 0; i <= this.CONFIG.VALUE_RANGE; i += step) {
       ticks.push(i);
     }
     return ticks;
@@ -85,7 +83,7 @@ export class RoadmapComponent implements OnInit {
    */
   calculateYPosition(value: number): number {
     // Value 0 maps to 0px (bottom), Value 650 maps to 600px (top)
-    const normalizedValue = Math.min(value, VALUE_RANGE) / VALUE_RANGE;
+    const normalizedValue = Math.min(value, this.CONFIG.VALUE_RANGE) / this.CONFIG.VALUE_RANGE;
     return normalizedValue * this.GRID_HEIGHT;
   }
 
@@ -122,8 +120,8 @@ export class RoadmapComponent implements OnInit {
     // 1. Calculate new Value (Y position)
     const normalizedValue = Math.max(0, Math.min(newY, this.GRID_HEIGHT)) / this.GRID_HEIGHT;
     // Map pixels to logical range (0-650), then clamp the actual data value to 500
-    const calculatedValue = Math.round(normalizedValue * VALUE_RANGE);
-    const newValue = Math.min(MAX_BUSINESS_VALUE, calculatedValue); // on bloque à 500 max 
+    const calculatedValue = Math.round(normalizedValue * this.CONFIG.VALUE_RANGE);
+    const newValue = Math.min(this.CONFIG.MAX_BUSINESS_VALUE, calculatedValue); // on bloque à 500 max 
 
     // 2. Calculate new Start Date (X position)
     const normalizedTime = Math.max(0, Math.min(newX, this.GRID_WIDTH)) / this.GRID_WIDTH; // 0 to 1

@@ -3,6 +3,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { ProjectBubble } from '../models/project.model';
 import { FormsModule } from '@angular/forms';
 import { RoadmapService } from '../roadmap.service';
+import { ROADMAP_CONFIG } from '../models/project.constants';
 
 @Component({
   selector: 'app-project-edit-modal',
@@ -23,10 +24,8 @@ export class ProjectEditModalComponent implements OnInit {
   // Available options for Service dropdown
   serviceOptions: ProjectBubble['service'][] = ['Finance', 'Marketing', 'IT', 'HR'];
 
-  // Maximum value for Business Value (aligned with RoadmapComponent)
-  readonly MAX_BUSINESS_VALUE = 500;
-  // Maximum value for Complexity (aligned with RoadmapComponent)
-  readonly MAX_COMPLEXITY = 500;
+  // Configuration (aligned with RoadmapComponent)
+  readonly CONFIG = ROADMAP_CONFIG;
 
   ngOnInit(): void {
     // Create a deep copy of the project for editing
