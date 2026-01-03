@@ -84,10 +84,11 @@
 /* Style de base commun à tous les handles */
 .resize-handle {
   position: absolute;
-  width: 10px;
-  height: 10px;
-  background: rgba(0, 255, 255, 0.5);
+  width: 8px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.7);
+  border-color: #1a1a1a;
   opacity: 0;
   transition: opacity 0.2s;
   z-index: 10;
@@ -110,25 +111,25 @@
   top: 0;
   left: 0;
   cursor: nwse-resize;
-  border-radius: 50% 0 0 0;
+  /*border-radius: 50% 0 0 0;*/
 }
 .top-right {
   top: 0;
   right: 0;
   cursor: nesw-resize;
-  border-radius: 0 50% 0 0;
+  /*border-radius: 0 50% 0 0;*/
 }
 .bottom-left {
   bottom: 0;
   left: 0;
   cursor: nesw-resize;
-  border-radius: 0 0 0 50%;
+  /*border-radius: 0 0 0 50%;*/
 }
 .bottom-right {
   bottom: 0;
   right: 0;
   cursor: nwse-resize;
-  border-radius: 0 0 50% 0;
+  /*border-radius: 0 0 50% 0;*/
 }
 
 /* Color Coding based on Service */
