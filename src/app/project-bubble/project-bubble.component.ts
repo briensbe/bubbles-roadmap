@@ -102,7 +102,7 @@ export class ProjectBubbleComponent implements OnInit {
     const deltaY = event.clientY - this.resizeStartY;
     const delta = Math.max(deltaX, deltaY);
 
-    let newSize = this.resizeStartSize + delta;
+    let newSize = this.resizeStartSize + delta * 2;
     newSize = Math.max(this.MIN_SIZE, Math.min(this.MAX_SIZE, newSize));
 
     this.size = newSize;

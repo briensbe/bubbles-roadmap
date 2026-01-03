@@ -3,6 +3,8 @@
   [ngClass]="serviceColorClass"
   [style.width.px]="size"
   [style.height.px]="size"
+  [style.left.px]="-size / 2"
+  [style.bottom.px]="-size / 2"
   cdkDrag
   [cdkDragLockAxis]="axisLock"
   (cdkDragEnded)="onDragEnd($event)"

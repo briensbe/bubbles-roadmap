@@ -28,11 +28,6 @@ export class RoadmapComponent implements OnInit {
   private GRID_HEIGHT = 600;
   private VALUE_RANGE = 50; // Max value for Y axis
 
-  // Constants for size scaling (must match ProjectBubbleComponent)
-  private MIN_SIZE = 40;
-  private MAX_SIZE = 120;
-  private COMPLEXITY_RANGE = 500;
-
   serviceColors = [
     { name: 'Finance', class: 'finance-bubble' },
     { name: 'Marketing', class: 'marketing-bubble' },
@@ -41,12 +36,9 @@ export class RoadmapComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    // Initialization logic if needed
   }
 
-  getBubbleSize(complexity: number): number {
-    return this.MIN_SIZE + (complexity / this.COMPLEXITY_RANGE) * (this.MAX_SIZE - this.MIN_SIZE);
-  }
+
 
   /**
    * Calculates the X position (in pixels) based on the project's start date (month).
