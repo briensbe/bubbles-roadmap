@@ -1,0 +1,48 @@
+<div class="modal-overlay" (click)="cancel()">
+  <div class="modal-content large" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <div class="header-title">
+        <h3>Import / Export Projects</h3>
+        <p class="subtitle">Edit the JSON representation of your roadmap data below.</p>
+      </div>
+      <button class="close-btn" (click)="cancel()">
+        <lucide-icon [name]="X" class="icon-md"></lucide-icon>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="json-container">
+        <textarea
+          [(ngModel)]="jsonContent"
+          placeholder="Paste your projects JSON here..."
+          name="jsonContent"
+          spellcheck="false"
+        ></textarea>
+      </div>
+
+      <!-- Alerts -->
+      <div *ngIf="errorMessage" class="alert alert-error">
+        <lucide-icon [name]="AlertCircle" class="icon-sm"></lucide-icon>
+        <span>{{ errorMessage }}</span>
+      </div>
+      <div *ngIf="successMessage" class="alert alert-success">
+        <lucide-icon [name]="CheckCircle" class="icon-sm"></lucide-icon>
+        <span>{{ successMessage }}</span>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-ghost" (click)="copyToClipboard()">
+        <lucide-icon [name]="Copy" class="icon-sm"></lucide-icon>
+        Copy JSON
+      </button>
+      <div class="footer-actions">
+        <button class="btn btn-secondary" (click)="cancel()">Cancel</button>
+        <button class="btn btn-primary" (click)="saveChanges()">
+          <lucide-icon [name]="Save" class="icon-sm"></lucide-icon>
+          Update Projects
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

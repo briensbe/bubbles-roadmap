@@ -42,7 +42,7 @@ export class ProjectEditModalComponent implements OnInit {
   }
 
   saveChanges(): void {
-    this.roadmapService.updateProject(this.editedProject);
+    this.roadmapService.saveProject(this.editedProject);
     this.close.emit();
   }
 

@@ -1,29 +1,73 @@
 <div class="list-container">
-  <h2>Project List View</h2>
-  
+  <div class="list-header">
+    <h2>Project List View</h2>
+    <div class="list-actions">
+      <button class="btn btn-ghost" (click)="isImportExportModalOpen.set(true)">
+        <lucide-icon [name]="FileJson" class="icon-sm"></lucide-icon>
+        Import / Export
+      </button>
+      <button class="btn btn-secondary" (click)="restoreDefaults()">
+        <lucide-icon [name]="RefreshCw" class="icon-sm"></lucide-icon>
+        Restore Defaults
+      </button>
+      <button class="btn btn-primary" (click)="openEditModal(null)">
+        <lucide-icon [name]="PlusCircle" class="icon-sm"></lucide-icon>
+        Add Project
+      </button>
+    </div>
+  </div>
+
   <table class="project-table">
     <thead>
       <tr>
         <th>Name</th>
         <th>Service</th>
-        <th>Value (Business Points)</th>
-        <th>Complexity (Story Points)</th>
+        <th>Value</th>
+        <th>Complexity</th>
         <th>Start Date</th>
+        <th class="actions-column">Actions</th>
       </tr>
     </thead>
     <tbody>
       @for (project of projects(); track project.id) {
-        <tr>
-          <td>{{ project.name }}</td>
-          <td>
-            <span class="service-indicator" [ngClass]="roadmapService.getServiceColor(project.service)"></span>
-            {{ project.service }}
-          </td>
-          <td>{{ project.value }} / 50</td>
-          <td>{{ project.complexity }} / 50</td>
-          <td>{{ project.startDate | date: 'mediumDate' }}</td>
-        </tr>
+      <tr>
+        <td>{{ project.name }}</td>
+        <td>
+          <span
+            class="service-indicator"
+            [ngClass]="roadmapService.getServiceColor(project.service)"
+          ></span>
+          {{ project.service }}
+        </td>
+        <td>{{ project.value }} / {{ CONFIG.MAX_BUSINESS_VALUE }}</td>
+        <td>{{ project.complexity }} / {{ CONFIG.MAX_COMPLEXITY }}</td>
+        <td>{{ project.startDate | date : 'mediumDate' }}</td>
+        <td class="actions-cell">
+          <button class="action-btn edit" (click)="openEditModal(project)" title="Edit">
+            <lucide-icon [name]="Pencil" class="icon-sm"></lucide-icon>
+          </button>
+          <button class="action-btn delete" (click)="deleteProject(project.id)" title="Delete">
+            <lucide-icon [name]="Trash2" class="icon-sm"></lucide-icon>
+          </button>
+        </td>
+      </tr>
       }
     </tbody>
   </table>
 </div>
+
+<!-- Edit Modal -->
+@if (editingProject()) {
+<app-project-edit-modal
+  [project]="editingProject()!"
+  (close)="closeEditModal()"
+></app-project-edit-modal>
+}
+
+<!-- Import / Export Modal -->
+@if (isImportExportModalOpen()) {
+<app-project-import-export-modal
+  [projects]="projects()"
+  (close)="isImportExportModalOpen.set(false)"
+></app-project-import-export-modal>
+}

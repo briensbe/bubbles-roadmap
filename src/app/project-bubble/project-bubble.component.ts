@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { CdkDragEnd, DragDropModule } from '@angular/cdk/drag-drop';
 import { ProjectBubble } from '../models/project.model';
 import { RoadmapService } from '../roadmap.service';
+import { ROADMAP_CONFIG } from '../models/project.constants';
 
 @Component({
   selector: 'app-project-bubble',
@@ -39,7 +40,6 @@ export class ProjectBubbleComponent implements OnInit {
   // Configuration for size scaling (0-500 complexity maps to 40px - 120px diameter)
   readonly MIN_SIZE = 30;
   readonly MAX_SIZE = 200;
-  readonly COMPLEXITY_RANGE = 500;
 
   get axisLock(): any {
     return this.lockXAxis ? 'y' : undefined;
@@ -57,16 +57,16 @@ export class ProjectBubbleComponent implements OnInit {
   }
 
   calculateSize(): void {
-    // Linear scaling: size = MIN + (Complexity / COMPLEXITY_RANGE) * (MAX - MIN)
-    this.size = this.MIN_SIZE + (this.project.complexity / this.COMPLEXITY_RANGE) * (this.MAX_SIZE - this.MIN_SIZE);
+    // Linear scaling: size = MIN + (Complexity / MAX_COMPLEXITY) * (MAX - MIN)
+    this.size = this.MIN_SIZE + (this.project.complexity / ROADMAP_CONFIG.MAX_COMPLEXITY) * (this.MAX_SIZE - this.MIN_SIZE);
   }
 
   // Method to calculate complexity from size
   calculateComplexity(size: number): number {
-    // Inverse scaling: Complexity = ((Size - MIN) / (MAX - MIN)) * COMPLEXITY_RANGE
+    // Inverse scaling: Complexity = ((Size - MIN) / (MAX - MIN)) * MAX_COMPLEXITY
     const clampedSize = Math.max(this.MIN_SIZE, Math.min(this.MAX_SIZE, size));
     const normalizedSize = (clampedSize - this.MIN_SIZE) / (this.MAX_SIZE - this.MIN_SIZE);
-    return Math.round(normalizedSize * this.COMPLEXITY_RANGE);
+    return Math.round(normalizedSize * ROADMAP_CONFIG.MAX_COMPLEXITY);
   }
 
   onDragEnd(event: CdkDragEnd): void {

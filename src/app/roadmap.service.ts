@@ -1,17 +1,12 @@
 import { Injectable, signal, computed, Signal } from '@angular/core';
 import { ProjectBubble } from './models/project.model';
+import { DEFAULT_PROJECTS } from './models/project.constants';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RoadmapService {
-  private projectsSource = signal<ProjectBubble[]>([
-    { id: 1, name: 'ERP Migration', service: 'Finance', complexity: 450, value: 480, startDate: new Date(2026, 4, 15) }, // May
-    { id: 2, name: 'Website Redesign', service: 'Marketing', complexity: 200, value: 350, startDate: new Date(2026, 6, 1) }, // July
-    { id: 3, name: 'Cloud Security Audit', service: 'IT', complexity: 300, value: 150, startDate: new Date(2026, 8, 10) }, // September
-    { id: 4, name: 'Recruitment Portal', service: 'HR', complexity: 100, value: 250, startDate: new Date(2026, 5, 20) }, // June
-    { id: 5, name: 'Q3 Budget Planning', service: 'Finance', complexity: 50, value: 400, startDate: new Date(2026, 7, 5) }, // August
-  ]);
+  private projectsSource = signal<ProjectBubble[]>([...DEFAULT_PROJECTS]);
 
   readonly projects: Signal<ProjectBubble[]> = this.projectsSource.asReadonly();
 
@@ -35,10 +30,50 @@ export class RoadmapService {
     );
   }
 
-  // New function to update project details
+  // Function to save project (add or update)
+  saveProject(project: ProjectBubble): void {
+    if (project.id === 0) {
+      this.addProject(project);
+    } else {
+      this.updateProject(project);
+    }
+  }
+
+  // Internal function to add a new project
+  private addProject(project: ProjectBubble): void {
+    this.projectsSource.update(projects => {
+      const maxId = projects.length > 0 ? Math.max(...projects.map(p => p.id)) : 0;
+      const newProject = { ...project, id: maxId + 1 };
+      return [...projects, newProject];
+    });
+  }
+
+  // Function to update project details
   updateProject(updatedProject: ProjectBubble): void {
     this.projectsSource.update(projects =>
       projects.map(p => p.id === updatedProject.id ? updatedProject : p)
     );
+  }
+
+  // Function to delete a project
+  deleteProject(id: number): void {
+    this.projectsSource.update(projects =>
+      projects.filter(p => p.id !== id)
+    );
+  }
+
+  // Function to replace all projects (for Import feature)
+  replaceProjects(newProjects: ProjectBubble[]): void {
+    // Ensure that startDate strings are converted back to Date objects
+    const validatedProjects = newProjects.map(p => ({
+      ...p,
+      startDate: new Date(p.startDate)
+    }));
+    this.projectsSource.set(validatedProjects);
+  }
+
+  // Function to restore default projects
+  restoreDefaults(): void {
+    this.projectsSource.set([...DEFAULT_PROJECTS]);
   }
 }
