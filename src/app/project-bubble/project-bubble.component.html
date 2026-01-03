@@ -20,8 +20,23 @@
 
   <!-- Resize handle in bottom-right corner -->
   <div
-    class="resize-handle"
+    class="resize-handle bottom-right"
     (mousedown)="onResizeStart($event)"
     [class.resizing]="isResizing"
   ></div>
+  <!-- <div
+    class="resize-handle bottom-left"
+    (mousedown)="onResizeStart($event)"
+    [class.resizing]="isResizing"
+  ></div>
+  <div
+    class="resize-handle top-left"
+    (mousedown)="onResizeStart($event)"
+    [class.resizing]="isResizing"
+  ></div>
+  <div
+    class="resize-handle top-right"
+    (mousedown)="onResizeStart($event)"
+    [class.resizing]="isResizing"
+  ></div> -->
 </div>
