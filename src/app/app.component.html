@@ -6,14 +6,17 @@
         Bubble Chart View
       </button>
       <button (click)="setView('list')" [class.active]="currentView === 'list'">List View</button>
+      <button (click)="setView('guide')" [class.active]="currentView === 'guide'">Guide</button>
     </div>
   </div>
 
   <div class="main-content">
     @if (currentView === 'dashboard') {
     <app-roadmap></app-roadmap>
-    } @else {
+    } @else if (currentView === 'list') {
     <app-project-list></app-project-list>
+    } @else {
+    <app-guide-view></app-guide-view>
     }
   </div>
 </div>
