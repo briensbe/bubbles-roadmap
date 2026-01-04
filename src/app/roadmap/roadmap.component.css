@@ -213,6 +213,7 @@ input:checked + .slider:before {
   overflow-x: auto;
   overflow-y: hidden;
   position: relative;
+  min-height: 650px; /* Ensures grid (600px) + X axis labels (~50px) are fully visible */
 }
 
 .roadmap-grid {

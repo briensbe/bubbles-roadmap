@@ -21,6 +21,9 @@ export class ProjectEditModalComponent implements OnInit {
   // Local state for form binding
   editedProject: ProjectBubble = {} as ProjectBubble;
 
+  // Track where the mouse interaction started
+  private mousedownTarget: EventTarget | null = null;
+
   // Available options for Service dropdown
   serviceOptions: ProjectBubble['service'][] = ['Finance', 'Marketing', 'IT', 'HR'];
 
@@ -60,5 +63,22 @@ export class ProjectEditModalComponent implements OnInit {
 
   cancel(): void {
     this.close.emit();
+  }
+
+  onOverlayMousedown(event: MouseEvent): void {
+    this.mousedownTarget = event.target;
+  }
+
+  handleOverlayClick(event: MouseEvent): void {
+    // Only close if BOTH mousedown and click happened on the overlay itself.
+    // This prevents closing when the user selects text inside and releases outside.
+    if (
+      event.target === event.currentTarget &&
+      this.mousedownTarget === event.currentTarget
+    ) {
+      this.cancel();
+    }
+    // Reset for next interaction
+    this.mousedownTarget = null;
   }
 }

@@ -1,4 +1,8 @@
-<div class="modal-overlay" (click)="cancel()">
+<div
+  class="modal-overlay"
+  (mousedown)="onOverlayMousedown($event)"
+  (click)="handleOverlayClick($event)"
+>
   <div class="modal-content" (click)="$event.stopPropagation()">
     <h3>Edit Project: {{ project.name }}</h3>
 
