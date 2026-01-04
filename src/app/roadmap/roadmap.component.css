@@ -1,9 +1,11 @@
 .roadmap-container {
   padding: 20px;
-  overflow-x: auto; /* Allows horizontal scrolling for the timeline */
   background-color: #f9f9f9;
   border: 1px solid #ddd;
   border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  min-height: 800px; /* Ensure enough space for 600px grid + header/legend */
 }
 
 .roadmap-header {
@@ -11,6 +13,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  flex-shrink: 0;
 }
 
 .roadmap-header h2 {
@@ -155,38 +158,36 @@ input:checked + .slider:before {
   color: #333;
 }
 
-.roadmap-grid {
+/* MAIN CHART LAYOUT */
+.main-chart-area {
+  display: flex;
+  overflow: visible; /* Allow axes to be visible */
+  padding-bottom: 50px; /* Space for X axis */
   position: relative;
-  width: 2400px; /* Width for 24 months (100px per month) */
-  height: 600px; /* Fixed height for the Value axis */
-  border: 1px solid #ccc;
-  background-color: white;
-  margin: 0 80px; /* Space for Y axis labels */
+  min-height: 650px; /* Height of grid + X axis */
 }
 
-.bubbles-viewport {
-  position: absolute;
-  inset: 0;
-  overflow: hidden; /* Clips the bubbles but leaves the axes visible outside */
-  pointer-events: none; /* Allows clicks to pass through to the grid for deselecting */
-}
-
-.bubbles-viewport > * {
-  pointer-events: auto; /* Re-enable pointer events for the bubbles themselves */
+.y-axis-container {
+  width: 80px; /* Space for Y axis labels */
+  position: relative;
+  flex-shrink: 0;
+  height: 600px; /* Match grid height */
+  margin-top: 0;
+  z-index: 5;
+  background-color: #f9f9f9; /* Match container bg */
 }
 
 .axis-y {
   position: absolute;
-  left: -60px;
+  right: 10px;
   top: 0;
   height: 100%;
   width: 50px;
-  padding: 0 5px;
   font-size: 0.8rem;
   color: #555;
 }
 
-.axis-y div {
+.y-tick {
   position: absolute;
   width: 100%;
   height: 0;
@@ -198,27 +199,56 @@ input:checked + .slider:before {
 
 .axis-y-label {
   position: absolute;
-  left: -150px;
+  left: -20px;
   top: 50%;
   transform: rotate(-90deg) translateY(-50%);
   font-weight: bold;
   font-size: 1rem;
   color: #333;
+  white-space: nowrap;
+}
+
+.scrollable-content {
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: hidden;
+  position: relative;
+}
+
+.roadmap-grid {
+  position: relative;
+  width: 2400px; /* Width for 24 months */
+  height: 600px;
+  border: 1px solid #ccc;
+  background-color: white;
+  margin: 0; /* Removing margins since we have y-axis-container */
+}
+
+.bubbles-viewport {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.bubbles-viewport > * {
+  pointer-events: auto;
 }
 
 .axis-x {
   position: absolute;
-  bottom: -30px;
+  bottom: -35px;
   left: 0;
   width: 100%;
   display: flex;
   justify-content: space-between;
   font-size: 0.8rem;
   color: #555;
+  pointer-events: none;
 }
 
 .month-label {
-  flex-basis: calc(100% / 24); /* 1/24th width */
+  flex-basis: calc(100% / 24);
   text-align: center;
   border-left: 1px dashed #eee;
   display: flex;
@@ -252,38 +282,44 @@ input:checked + .slider:before {
   border-left: 1px dashed #eee;
 }
 
+/* FIXED LEGENDS */
+.fixed-legends {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px; /* Space between chart and legend */
+  padding-bottom: 20px;
+  flex-shrink: 0;
+}
+
 .complexity-legend {
-  margin-top: 40px;
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 0.9rem;
-  display: inline-block;
   margin-right: 20px;
   display: flex;
-  flex-wrap: wrap; /* Permet le retour à la ligne */
-  flex-direction: column; /* Force le titre en haut et le container en dessous */
-  gap: 20px; /* <--- Augmentez ici pour écarter les colonnes les unes des autres */
-  align-items: flex-end; /* C'est la clé : aligne tout par le bas */
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+  background: white;
 }
 
 .complexity-legend h4 {
-  margin: 0; /* Supprime les marges par défaut qui créent des espaces vides */
+  margin: 0;
   width: 100%;
 }
 
 .legend-items-container {
   display: flex;
-  flex-direction: row; /* Aligne les items vers la droite */
-  align-items: flex-end; /* Aligne les bulles par le bas (le texte sera aligné) */
-  gap: 25px; /* Espace horizontal entre chaque colonne de légende */
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 25px;
 }
 
 .legend-item {
   display: flex;
-  flex-direction: column; /* Empile la bulle et le texte verticalement */
-  align-items: center; /* Centre la bulle au-dessus du texte */
-  margin-right: 20px; /* Espace entre les colonnes de la légende */
+  flex-direction: column;
+  align-items: center;
   margin-bottom: 5px;
   text-align: center;
 }
@@ -292,24 +328,23 @@ input:checked + .slider:before {
   border-radius: 50%;
   background-color: #ccc;
   border: 1px solid #aaa;
-  margin-bottom: 5px; /* Espace entre la bulle (haut) et le texte (bas) */
-  margin-right: 0; /* On supprime l'ancienne marge à droite */
+  margin-bottom: 5px;
 }
 
 .legend-item span {
   display: block;
   font-size: 0.85rem;
-  color: #555; /* Couleur plus douce pour la description et le range */
+  color: #555;
   margin-bottom: 2px;
 }
 
 .legend-item span:first-of-type {
   font-size: 0.95rem;
-  color: #000; /* Label principal plus sombre */
+  color: #000;
   font-weight: 600;
 }
 
-/* Color Coding based on Service (repeated here for legend) */
+/* Color Coding based on Service */
 .finance-bubble {
   background-color: #3498db;
 }

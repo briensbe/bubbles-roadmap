@@ -27,5 +27,13 @@ export const DEFAULT_PROJECTS: ProjectBubble[] = [
         complexity: 400,
         value: 100,
         startDate: new Date("2025-12-08T00:00:00.000Z")
+    },
+    {
+        id: 8,
+        name: "2027.2.0",
+        service: "Finance",
+        complexity: 250,
+        value: 100,
+        startDate: new Date("2027-03-21T00:00:00.000Z")
     }
 ];

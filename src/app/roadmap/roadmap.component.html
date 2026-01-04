@@ -1,4 +1,5 @@
 <div class="roadmap-container">
+  <!-- 1. FIXED HEADER -->
   <div class="roadmap-header">
     <h2>Project Roadmap Bubble Chart</h2>
 
@@ -42,64 +43,69 @@
     </div>
   </div>
 
-  <div class="roadmap-grid" (click)="deselectProject()">
-    <!-- Y-Axis (Value) -->
-    <div class="axis-y-label">
-      Value (Max {{ CONFIG.MAX_BUSINESS_VALUE }} / Scale {{ CONFIG.VALUE_RANGE }})
-    </div>
-    <div class="axis-y">
-      @for (i of yAxisTicks; track i) {
-      <div [style.bottom.%]="(i / CONFIG.VALUE_RANGE) * 100">
-        {{ i }}
+  <!-- 2. MAIN CHART AREA (Flex layout) -->
+  <div class="main-chart-area">
+    <!-- Left: Fixed Y-Axis column -->
+    <div class="y-axis-container">
+      <div class="axis-y-label">Value (Max {{ CONFIG.MAX_BUSINESS_VALUE }})</div>
+      <div class="axis-y">
+        @for (i of yAxisTicks; track i) {
+        <div class="y-tick" [style.bottom.%]="(i / CONFIG.VALUE_RANGE) * 100">
+          {{ i }}
+        </div>
+        }
       </div>
-      }
     </div>
 
-    <!-- Grid Lines Y -->
-    @for (i of yAxisTicks; track i) { @if (i > 0) {
-    <div class="grid-line-y" [style.bottom.%]="(i / CONFIG.VALUE_RANGE) * 100"></div>
-    } }
+    <!-- Right: Scrollable Grid & X-Axis -->
+    <div class="scrollable-content">
+      <div class="roadmap-grid" (click)="deselectProject()">
+        <!-- Grid Lines Y -->
+        @for (i of yAxisTicks; track i) { @if (i > 0) {
+        <div class="grid-line-y" [style.bottom.%]="(i / CONFIG.VALUE_RANGE) * 100"></div>
+        } }
 
-    <!-- Grid Lines X and X-Axis (Timeline) -->
-    <!-- Grid Lines X and X-Axis (Timeline) -->
-    @for (month of timelineMonths; track month.name + month.year; let i = $index) {
-    <!-- Grid line every month -->
-    <div class="grid-line-x" [style.left.%]="(i + 1) * (100 / viewDurationMonths)"></div>
-    }
-    <div class="axis-x">
-      @for (month of timelineMonths; track month.name + month.year) {
-      <div class="month-label">
-        <span class="month-name">{{ month.name }}</span>
-        <span class="month-year">{{ month.year }}</span>
+        <!-- Grid Lines X and X-Axis (Timeline) -->
+        @for (month of timelineMonths; track month.name + month.year; let i = $index) {
+        <div class="grid-line-x" [style.left.%]="(i + 1) * (100 / viewDurationMonths)"></div>
+        }
+
+        <div class="axis-x">
+          @for (month of timelineMonths; track month.name + month.year) {
+          <div class="month-label">
+            <span class="month-name">{{ month.name }}</span>
+            <span class="month-year">{{ month.year }}</span>
+          </div>
+          }
+        </div>
+
+        <!-- Bubbles (Clipped in a viewport) -->
+        <div class="bubbles-viewport">
+          @for (project of visibleProjects(); track project.id) {
+          <app-project-bubble
+            [project]="project"
+            [isSelected]="activeProject()?.id === project.id"
+            [initialX]="calculateXPosition(project.startDate)"
+            [initialY]="calculateYPosition(project.value)"
+            [lockXAxis]="isXAxisLocked()"
+            [style.position]="'absolute'"
+            [style.left.px]="calculateXPosition(project.startDate)"
+            [style.bottom.px]="calculateYPosition(project.value)"
+            [style.z-index]="topmostProjectId() === project.id ? 100 : 10"
+            (hovered)="topmostProjectId.set(project.id)"
+            (clickSelection)="selectProject($event)"
+            (edit)="openEditModal(project)"
+            (positionChange)="handlePositionChange($event)"
+            (complexityChange)="handleComplexityChange($event)"
+          ></app-project-bubble>
+          }
+        </div>
       </div>
-      }
-    </div>
-
-    <!-- Bubbles (Clipped in a viewport to keep axes visible) -->
-    <div class="bubbles-viewport">
-      @for (project of visibleProjects(); track project.id) {
-      <app-project-bubble
-        [project]="project"
-        [isSelected]="activeProject()?.id === project.id"
-        [initialX]="calculateXPosition(project.startDate)"
-        [initialY]="calculateYPosition(project.value)"
-        [lockXAxis]="isXAxisLocked()"
-        [style.position]="'absolute'"
-        [style.left.px]="calculateXPosition(project.startDate)"
-        [style.bottom.px]="calculateYPosition(project.value)"
-        [style.z-index]="topmostProjectId() === project.id ? 100 : 10"
-        (hovered)="topmostProjectId.set(project.id)"
-        (clickSelection)="selectProject($event)"
-        (edit)="openEditModal(project)"
-        (positionChange)="handlePositionChange($event)"
-        (complexityChange)="handleComplexityChange($event)"
-      ></app-project-bubble>
-      }
     </div>
   </div>
 
-  <!-- Legends -->
-  <div style="display: flex; justify-content: center; margin-top: 50px; align-items: flex-start">
+  <!-- 3. FIXED LEGENDS -->
+  <div class="fixed-legends">
     <div class="complexity-legend">
       <h4>Complexity (Size) Legend</h4>
       <div class="legend-items-container">
