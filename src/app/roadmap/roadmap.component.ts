@@ -26,7 +26,7 @@ export class RoadmapComponent implements OnInit {
   // State for editing and selection
   activeProject = signal<ProjectBubble | null>(null);
   editingProject = signal<ProjectBubble | null>(null);
-  isXAxisLocked = signal<boolean>(true);
+  isXAxisLocked = signal<boolean>(false);
   topmostProjectId = signal<number | null>(null);
 
   /**
