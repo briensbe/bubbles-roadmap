@@ -27,6 +27,18 @@ export class ProjectEditModalComponent implements OnInit {
   // Configuration (aligned with RoadmapComponent)
   readonly CONFIG = ROADMAP_CONFIG;
 
+  complexityPresets = [
+    { label: 'XS', value: 50 },
+    { label: 'S', value: 100 },
+    { label: 'M', value: 250 },
+    { label: 'L', value: 400 },
+    { label: 'XL', value: 500 }
+  ];
+
+  setComplexity(value: number): void {
+    this.editedProject.complexity = value;
+  }
+
   ngOnInit(): void {
     // Create a deep copy of the project for editing
     this.editedProject = { ...this.project };

@@ -51,6 +51,7 @@
           >Complexity (Story Points): {{ editedProject.complexity }} /
           {{ CONFIG.MAX_COMPLEXITY }}</label
         >
+
         <input
           id="complexity"
           type="range"
@@ -60,6 +61,19 @@
           max="{{ CONFIG.MAX_COMPLEXITY }}"
           required
         />
+      </div>
+
+      <div class="complexity-presets">
+        @for (preset of complexityPresets; track preset.label) {
+        <button
+          type="button"
+          class="preset-badge"
+          [class.active]="editedProject.complexity === preset.value"
+          (click)="setComplexity(preset.value)"
+        >
+          {{ preset.label }}
+        </button>
+        }
       </div>
 
       <div class="form-actions">

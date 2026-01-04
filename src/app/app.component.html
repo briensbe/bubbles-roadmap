@@ -1,27 +1,19 @@
 <div class="main">
   <div class="header">
-    <h1>Project Roadmap Dashboard</h1>
+    <h1>Bubbles Roadmap</h1>
     <div class="view-toggle">
-      <button 
-        (click)="setView('dashboard')" 
-        [class.active]="currentView === 'dashboard'"
-      >
+      <button (click)="setView('dashboard')" [class.active]="currentView === 'dashboard'">
         Bubble Chart View
       </button>
-      <button 
-        (click)="setView('list')" 
-        [class.active]="currentView === 'list'"
-      >
-        List View
-      </button>
+      <button (click)="setView('list')" [class.active]="currentView === 'list'">List View</button>
     </div>
   </div>
 
   <div class="main-content">
     @if (currentView === 'dashboard') {
-      <app-roadmap></app-roadmap>
+    <app-roadmap></app-roadmap>
     } @else {
-      <app-project-list></app-project-list>
+    <app-project-list></app-project-list>
     }
   </div>
 </div>

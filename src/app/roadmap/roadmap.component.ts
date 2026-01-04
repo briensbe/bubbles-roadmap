@@ -5,6 +5,7 @@ import { ProjectBubbleComponent } from '../project-bubble/project-bubble.compone
 import { ProjectBubble } from '../models/project.model';
 import { ProjectEditModalComponent } from '../project-edit-modal/project-edit-modal.component';
 import { ROADMAP_CONFIG } from '../models/project.constants';
+import { range } from 'rxjs';
 
 @Component({
   selector: 'app-roadmap',
@@ -52,6 +53,23 @@ export class RoadmapComponent implements OnInit {
     { name: 'IT', class: 'it-bubble' },
     { name: 'HR', class: 'hr-bubble' },
   ];
+
+  complexityLegend = [
+    { label: 'XS', size: 50, description: 'very simple', range: [0, 50] },
+    { label: 'S', size: 100, description: 'simple', range: [50, 100] },
+    { label: 'M', size: 250, description: 'medium', range: [100, 250] },
+    { label: 'L', size: 400, description: 'complex', range: [250, 400] },
+    { label: 'XL', size: 500, description: 'very complex', range: [400, 500] }
+  ];
+
+  getLegendBubbleSize(complexity: number): number {
+    // Map complexity (0-500) to pixel size (e.g., 20px to 80px)
+    // Formula: minSize + (complexity / maxComplexity) * (maxSize - minSize)
+    const minSize = 20;
+    const maxSize = 80;
+    const ratio = complexity / this.CONFIG.MAX_COMPLEXITY;
+    return minSize + ratio * (maxSize - minSize);
+  }
 
   ngOnInit(): void {
   }

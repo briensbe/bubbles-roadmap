@@ -155,23 +155,53 @@ input:checked + .slider:before {
   font-size: 0.9rem;
   display: inline-block;
   margin-right: 20px;
+  display: flex;
+  flex-wrap: wrap; /* Permet le retour à la ligne */
+  flex-direction: column; /* Force le titre en haut et le container en dessous */
+  gap: 20px; /* <--- Augmentez ici pour écarter les colonnes les unes des autres */
+  align-items: flex-end; /* C'est la clé : aligne tout par le bas */
 }
 
 .complexity-legend h4 {
-  margin-bottom: 5px;
+  margin: 0; /* Supprime les marges par défaut qui créent des espaces vides */
+  width: 100%;
+}
+
+.legend-items-container {
+  display: flex;
+  flex-direction: row; /* Aligne les items vers la droite */
+  align-items: flex-end; /* Aligne les bulles par le bas (le texte sera aligné) */
+  gap: 25px; /* Espace horizontal entre chaque colonne de légende */
 }
 
 .legend-item {
   display: flex;
-  align-items: center;
+  flex-direction: column; /* Empile la bulle et le texte verticalement */
+  align-items: center; /* Centre la bulle au-dessus du texte */
+  margin-right: 20px; /* Espace entre les colonnes de la légende */
   margin-bottom: 5px;
+  text-align: center;
 }
 
 .legend-bubble {
   border-radius: 50%;
   background-color: #ccc;
-  margin-right: 10px;
   border: 1px solid #aaa;
+  margin-bottom: 5px; /* Espace entre la bulle (haut) et le texte (bas) */
+  margin-right: 0; /* On supprime l'ancienne marge à droite */
+}
+
+.legend-item span {
+  display: block;
+  font-size: 0.85rem;
+  color: #555; /* Couleur plus douce pour la description et le range */
+  margin-bottom: 2px;
+}
+
+.legend-item span:first-of-type {
+  font-size: 0.95rem;
+  color: #000; /* Label principal plus sombre */
+  font-weight: 600;
 }
 
 /* Color Coding based on Service (repeated here for legend) */

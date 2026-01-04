@@ -65,36 +65,40 @@
   </div>
 
   <!-- Legends -->
-  <div style="display: flex; justify-content: center; margin-top: 50px">
+  <div style="display: flex; justify-content: center; margin-top: 50px; align-items: flex-start">
     <div class="complexity-legend">
       <h4>Complexity (Size) Legend</h4>
-      <div class="legend-item">
-        <div class="legend-bubble" [style.width.px]="40" [style.height.px]="40"></div>
-        <span>Low Complexity (0-100 points)</span>
-      </div>
-      <div class="legend-item">
-        <div class="legend-bubble" [style.width.px]="80" [style.height.px]="80"></div>
-        <span>Medium Complexity (200-300 points)</span>
-      </div>
-      <div class="legend-item">
-        <div class="legend-bubble" [style.width.px]="120" [style.height.px]="120"></div>
-        <span>High Complexity (400-500 points)</span>
+      <div class="legend-items-container">
+        @for (item of complexityLegend; track item.label) {
+        <div class="legend-item">
+          <div
+            class="legend-bubble"
+            [style.width.px]="getLegendBubbleSize(item.size)"
+            [style.height.px]="getLegendBubbleSize(item.size)"
+          ></div>
+          <span>{{ item.label }}</span>
+          <span>{{ item.description }}</span>
+          <span>{{ item.range[0] }} - {{ item.range[1] }}</span>
+        </div>
+        }
       </div>
     </div>
 
     <div class="complexity-legend">
       <h4>Service (Color) Legend</h4>
-      @for (service of serviceColors; track service.name) {
-      <div class="legend-item">
-        <div
-          class="legend-bubble"
-          [ngClass]="service.class"
-          [style.width.px]="20"
-          [style.height.px]="20"
-        ></div>
-        <span>{{ service.name }}</span>
+      <div class="legend-items-container">
+        @for (service of serviceColors; track service.name) {
+        <div class="legend-item">
+          <div
+            class="legend-bubble"
+            [ngClass]="service.class"
+            [style.width.px]="20"
+            [style.height.px]="20"
+          ></div>
+          <span>{{ service.name }}</span>
+        </div>
+        }
       </div>
-      }
     </div>
   </div>
 </div>
