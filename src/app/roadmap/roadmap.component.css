@@ -20,6 +20,45 @@
 .roadmap-controls {
   display: flex;
   align-items: center;
+  gap: 20px;
+}
+
+.timeline-nav {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: white;
+  padding: 5px 15px;
+  border-radius: 20px;
+  border: 1px solid #ddd;
+}
+
+.nav-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  color: #555;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+
+.nav-btn:hover {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.nav-indicators {
+  display: flex;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.count-badge {
+  background: #eef2f5;
+  padding: 2px 8px;
+  border-radius: 10px;
 }
 
 /* Toggle Switch Styles */
@@ -76,7 +115,7 @@ input:checked + .slider:before {
 
 .roadmap-grid {
   position: relative;
-  width: 1200px; /* Fixed width for the timeline (e.g., 100px per month * 12 months) */
+  width: 2400px; /* Width for 24 months (100px per month) */
   height: 600px; /* Fixed height for the Value axis */
   border: 1px solid #ccc;
   background-color: white;
@@ -126,9 +165,22 @@ input:checked + .slider:before {
 }
 
 .month-label {
-  flex-basis: calc(100% / 12);
+  flex-basis: calc(100% / 24); /* 1/24th width */
   text-align: center;
   border-left: 1px dashed #eee;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-size: 0.75rem;
+}
+
+.month-name {
+  font-weight: 600;
+}
+
+.month-year {
+  font-size: 0.7rem;
+  color: #888;
 }
 
 .month-label:first-child {

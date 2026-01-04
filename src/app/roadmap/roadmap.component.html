@@ -3,6 +3,17 @@
     <h2>Project Roadmap Bubble Chart</h2>
 
     <div class="roadmap-controls">
+      <!-- Navigation -->
+      <div class="timeline-nav">
+        <button class="nav-btn" (click)="navigate(-12)">← Previous Year</button>
+        <span class="nav-indicators">
+          @for (count of projectCounts(); track count.year) {
+          <span class="count-badge">{{ count.year }} ({{ count.count }})</span>
+          }
+        </span>
+        <button class="nav-btn" (click)="navigate(12)">Next Year →</button>
+      </div>
+
       <label class="toggle-switch">
         <input
           type="checkbox"
@@ -10,7 +21,7 @@
           (change)="isXAxisLocked.set(!isXAxisLocked())"
         />
         <span class="slider"></span>
-        <span class="toggle-label">🔒 Lock Dates (X-Axis)</span>
+        <span class="toggle-label">🔒 Lock Project Dates</span>
       </label>
     </div>
   </div>
@@ -34,12 +45,17 @@
     } }
 
     <!-- Grid Lines X and X-Axis (Timeline) -->
-    @for (month of months; track month; let i = $index) {
-    <div class="grid-line-x" [style.left.%]="(i + 1) * (100 / 12)"></div>
+    <!-- Grid Lines X and X-Axis (Timeline) -->
+    @for (month of timelineMonths; track month.name + month.year; let i = $index) {
+    <!-- Grid line every month -->
+    <div class="grid-line-x" [style.left.%]="(i + 1) * (100 / viewDurationMonths)"></div>
     }
     <div class="axis-x">
-      @for (month of months; track month) {
-      <div class="month-label">{{ month }}</div>
+      @for (month of timelineMonths; track month.name + month.year) {
+      <div class="month-label">
+        <span class="month-name">{{ month.name }}</span>
+        <span class="month-year">{{ month.year }}</span>
+      </div>
       }
     </div>
 

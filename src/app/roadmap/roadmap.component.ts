@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RoadmapService } from '../roadmap.service';
 import { ProjectBubbleComponent } from '../project-bubble/project-bubble.component';
@@ -21,7 +21,57 @@ export class RoadmapComponent implements OnInit {
   // Expose configuration to template
   readonly CONFIG = ROADMAP_CONFIG;
 
-  months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  // Timeline Configuration
+  readonly viewDurationMonths = 24;
+  // Use a signal for viewStartDate to ensure reactivity
+  viewStartDate = signal<Date>(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
+
+  get timelineMonths(): { name: string, year: number }[] {
+    const months = [];
+    const start = this.viewStartDate();
+    for (let i = 0; i < this.viewDurationMonths; i++) {
+      const date = new Date(start.getFullYear(), start.getMonth() + i, 1);
+      months.push({
+        name: date.toLocaleString('default', { month: 'short' }),
+        year: date.getFullYear()
+      });
+    }
+    return months;
+  }
+
+  // Computed property to count projects per visible year
+  projectCounts = computed(() => {
+    const projects = this.projects();
+    const start = this.viewStartDate();
+    const end = new Date(start.getFullYear(), start.getMonth() + this.viewDurationMonths, 0);
+
+    // Get unique years in the view
+    const years = new Set<number>();
+    for (let i = 0; i < this.viewDurationMonths; i++) {
+      const d = new Date(start.getFullYear(), start.getMonth() + i, 1);
+      years.add(d.getFullYear());
+    }
+
+    const counts: { year: number, count: number }[] = [];
+    years.forEach(year => {
+      const count = projects.filter(p => {
+        const pDate = new Date(p.startDate);
+        return pDate.getFullYear() === year;
+      }).length;
+      counts.push({ year, count });
+    });
+
+    return counts.sort((a, b) => a.year - b.year);
+  });
+
+  /**
+   * Navigates the timeline by a given number of months.
+   */
+  navigate(months: number): void {
+    const current = this.viewStartDate();
+    const newDate = new Date(current.getFullYear(), current.getMonth() + months, 1);
+    this.viewStartDate.set(newDate);
+  }
 
   // State for editing and selection
   activeProject = signal<ProjectBubble | null>(null);
@@ -43,9 +93,8 @@ export class RoadmapComponent implements OnInit {
   }
 
   // Constants defining the grid dimensions in pixels (must match CSS .roadmap-grid)
-  private GRID_WIDTH = 1200;
+  private GRID_WIDTH = 2400; // Increased for 24 months (100px per month)
   private GRID_HEIGHT = 600;
-
 
   serviceColors = [
     { name: 'Finance', class: 'finance-bubble' },
@@ -74,24 +123,27 @@ export class RoadmapComponent implements OnInit {
   ngOnInit(): void {
   }
 
-
-
   /**
-   * Calculates the X position (in pixels) based on the project's start date (month).
-   * Maps the date within the year to a position across the GRID_WIDTH.
+   * Calculates the X position (in pixels) based on the project's start date.
+   * Maps the date relative to viewStartDate across the GRID_WIDTH (24 months).
    */
   calculateXPosition(date: Date): number {
-    const month = date.getMonth(); // 0 (Jan) to 11 (Dec)
-    const dayOfMonth = date.getDate();
-    const daysInMonth = new Date(date.getFullYear(), month + 1, 0).getDate();
+    const start = new Date(date);
+    const viewStart = this.viewStartDate();
 
-    // Calculate position within the month slot (0 to 1/12th of the width)
-    const monthFraction = (dayOfMonth - 1) / daysInMonth;
+    // Calculate difference in months
+    const monthsDiff = (start.getFullYear() - viewStart.getFullYear()) * 12 + (start.getMonth() - viewStart.getMonth());
 
-    // Calculate total position: (Month Index + Fraction) / 12 * GRID_WIDTH
-    const normalizedPosition = (month + monthFraction) / 12;
+    // Calculate fraction of current month
+    const daysInMonth = new Date(start.getFullYear(), start.getMonth() + 1, 0).getDate();
+    const monthFraction = (start.getDate() - 1) / daysInMonth;
 
-    // Return the position of the center point on the timeline
+    // Total months from start
+    const totalMonths = monthsDiff + monthFraction;
+
+    // Normalize to grid width (can extend beyond 0-1 range)
+    const normalizedPosition = totalMonths / this.viewDurationMonths;
+
     return normalizedPosition * this.GRID_WIDTH;
   }
 
@@ -143,17 +195,22 @@ export class RoadmapComponent implements OnInit {
 
     // 2. Calculate new Start Date (X position)
     const normalizedTime = Math.max(0, Math.min(newX, this.GRID_WIDTH)) / this.GRID_WIDTH; // 0 to 1
-    const totalMonths = normalizedTime * 12;
-    const monthIndex = Math.floor(totalMonths); // 0 to 11
-    const dayFraction = totalMonths - monthIndex;
+    const totalMonthsFromStart = normalizedTime * this.viewDurationMonths;
 
-    const currentYear = new Date().getFullYear();
-    const daysInNewMonth = new Date(currentYear, monthIndex + 1, 0).getDate();
+    // Add these months to viewStartDate
+    const viewStart = this.viewStartDate();
+    const targetMonthIndex = Math.floor(totalMonthsFromStart);
+    const dayFraction = totalMonthsFromStart - targetMonthIndex;
+
+    const targetDate = new Date(viewStart.getFullYear(), viewStart.getMonth() + targetMonthIndex, 1);
+
+    // Ensure accurate day calculation for the target month
+    const daysInNewMonth = new Date(targetDate.getFullYear(), targetDate.getMonth() + 1, 0).getDate();
     const newDay = Math.max(1, Math.round(dayFraction * daysInNewMonth));
 
     const newStartDate = this.isXAxisLocked()
       ? project.startDate
-      : new Date(currentYear, monthIndex, newDay);
+      : new Date(targetDate.getFullYear(), targetDate.getMonth(), newDay);
 
     // Create a temporary project object with updated values
     const updatedProject: ProjectBubble = {
