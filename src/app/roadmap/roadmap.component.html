@@ -5,13 +5,29 @@
     <div class="roadmap-controls">
       <!-- Navigation -->
       <div class="timeline-nav">
-        <button class="nav-btn" (click)="navigate(-12)">← Previous Year</button>
-        <span class="nav-indicators">
-          @for (count of projectCounts(); track count.year) {
-          <span class="count-badge">{{ count.year }} ({{ count.count }})</span>
+        <!-- Chevron Left -->
+        <button class="nav-btn icon-btn" (click)="navigate(-12)">
+          <lucide-icon [img]="ChevronLeft" [size]="20"></lucide-icon>
+        </button>
+
+        <!-- Dynamic Year Indicators (N-1, N, N+1) -->
+        <div class="year-indicators">
+          @for (year of navigationYears(); track year) {
+          <button
+            class="year-badge"
+            [class.active]="year === currentYear()"
+            (click)="jumpToYear(year)"
+          >
+            <span class="year-label">{{ year }}</span>
+            <span class="count-pill">{{ getProjectCount(year) }}</span>
+          </button>
           }
-        </span>
-        <button class="nav-btn" (click)="navigate(12)">Next Year →</button>
+        </div>
+
+        <!-- Chevron Right -->
+        <button class="nav-btn icon-btn" (click)="navigate(12)">
+          <lucide-icon [img]="ChevronRight" [size]="20"></lucide-icon>
+        </button>
       </div>
 
       <label class="toggle-switch">
@@ -59,25 +75,27 @@
       }
     </div>
 
-    <!-- Bubbles -->
-    @for (project of projects(); track project.id) {
-    <app-project-bubble
-      [project]="project"
-      [isSelected]="activeProject()?.id === project.id"
-      [initialX]="calculateXPosition(project.startDate)"
-      [initialY]="calculateYPosition(project.value)"
-      [lockXAxis]="isXAxisLocked()"
-      [style.position]="'absolute'"
-      [style.left.px]="calculateXPosition(project.startDate)"
-      [style.bottom.px]="calculateYPosition(project.value)"
-      [style.z-index]="topmostProjectId() === project.id ? 100 : 10"
-      (hovered)="topmostProjectId.set(project.id)"
-      (clickSelection)="selectProject($event)"
-      (edit)="openEditModal(project)"
-      (positionChange)="handlePositionChange($event)"
-      (complexityChange)="handleComplexityChange($event)"
-    ></app-project-bubble>
-    }
+    <!-- Bubbles (Clipped in a viewport to keep axes visible) -->
+    <div class="bubbles-viewport">
+      @for (project of visibleProjects(); track project.id) {
+      <app-project-bubble
+        [project]="project"
+        [isSelected]="activeProject()?.id === project.id"
+        [initialX]="calculateXPosition(project.startDate)"
+        [initialY]="calculateYPosition(project.value)"
+        [lockXAxis]="isXAxisLocked()"
+        [style.position]="'absolute'"
+        [style.left.px]="calculateXPosition(project.startDate)"
+        [style.bottom.px]="calculateYPosition(project.value)"
+        [style.z-index]="topmostProjectId() === project.id ? 100 : 10"
+        (hovered)="topmostProjectId.set(project.id)"
+        (clickSelection)="selectProject($event)"
+        (edit)="openEditModal(project)"
+        (positionChange)="handlePositionChange($event)"
+        (complexityChange)="handleComplexityChange($event)"
+      ></app-project-bubble>
+      }
+    </div>
   </div>
 
   <!-- Legends -->

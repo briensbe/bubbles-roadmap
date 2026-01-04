@@ -5,16 +5,21 @@ import { ProjectBubbleComponent } from '../project-bubble/project-bubble.compone
 import { ProjectBubble } from '../models/project.model';
 import { ProjectEditModalComponent } from '../project-edit-modal/project-edit-modal.component';
 import { ROADMAP_CONFIG } from '../models/project.constants';
+import { LucideAngularModule, ChevronLeft, ChevronRight } from 'lucide-angular';
 import { range } from 'rxjs';
 
 @Component({
   selector: 'app-roadmap',
   standalone: true,
-  imports: [CommonModule, ProjectBubbleComponent, ProjectEditModalComponent],
+  imports: [CommonModule, ProjectBubbleComponent, ProjectEditModalComponent, LucideAngularModule],
   templateUrl: './roadmap.component.html',
   styleUrl: './roadmap.component.css'
 })
 export class RoadmapComponent implements OnInit {
+  // Icons
+  readonly ChevronLeft = ChevronLeft;
+  readonly ChevronRight = ChevronRight;
+
   roadmapService = inject(RoadmapService);
   projects = this.roadmapService.projects;
 
@@ -38,6 +43,19 @@ export class RoadmapComponent implements OnInit {
     }
     return months;
   }
+
+  // Filter projects to only show those visible in the current view
+  visibleProjects = computed(() => {
+    const projects = this.projects();
+    const start = this.viewStartDate();
+    // End date is start + duration months
+    const end = new Date(start.getFullYear(), start.getMonth() + this.viewDurationMonths, 0);
+
+    return projects.filter(p => {
+      const pDate = new Date(p.startDate);
+      return pDate >= start && pDate <= end;
+    });
+  });
 
   // Computed property to count projects per visible year
   projectCounts = computed(() => {
@@ -63,6 +81,30 @@ export class RoadmapComponent implements OnInit {
 
     return counts.sort((a, b) => a.year - b.year);
   });
+
+  // Current year based on viewStartDate
+  currentYear = computed(() => this.viewStartDate().getFullYear());
+
+  // Navigation years (N-1, N, N+1)
+  navigationYears = computed(() => {
+    const current = this.currentYear();
+    return [current - 1, current, current + 1];
+  });
+
+  /**
+   * Returns project count for a specific year.
+   */
+  getProjectCount(year: number): number {
+    return this.projects().filter(p => new Date(p.startDate).getFullYear() === year).length;
+  }
+
+  /**
+   * Jumps the view to start at the selected year.
+   */
+  jumpToYear(year: number): void {
+    const newDate = new Date(year, 0, 1); // Jan 1st of selected year
+    this.viewStartDate.set(newDate);
+  }
 
   /**
    * Navigates the timeline by a given number of months.
