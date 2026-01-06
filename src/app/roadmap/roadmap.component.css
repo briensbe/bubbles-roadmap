@@ -106,6 +106,31 @@
   color: white;
 }
 
+.btn-add {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #2ecc71;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 24px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(46, 204, 113, 0.2);
+}
+
+.btn-add:hover {
+  background-color: #27ae60;
+  box-shadow: 0 4px 8px rgba(46, 204, 113, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-add lucide-icon {
+  display: flex;
+}
+
 /* Toggle Switch Styles */
 .toggle-switch {
   position: relative;

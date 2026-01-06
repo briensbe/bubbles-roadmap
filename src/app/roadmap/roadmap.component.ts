@@ -5,7 +5,7 @@ import { ProjectBubbleComponent } from '../project-bubble/project-bubble.compone
 import { ProjectBubble } from '../models/project.model';
 import { ProjectEditModalComponent } from '../project-edit-modal/project-edit-modal.component';
 import { ROADMAP_CONFIG } from '../models/project.constants';
-import { LucideAngularModule, ChevronLeft, ChevronRight } from 'lucide-angular';
+import { LucideAngularModule, ChevronLeft, ChevronRight, Plus } from 'lucide-angular';
 import { range } from 'rxjs';
 
 @Component({
@@ -19,6 +19,7 @@ export class RoadmapComponent implements OnInit {
   // Icons
   readonly ChevronLeft = ChevronLeft;
   readonly ChevronRight = ChevronRight;
+  readonly Plus = Plus;
 
   roadmapService = inject(RoadmapService);
   projects = this.roadmapService.projects;
@@ -203,6 +204,18 @@ export class RoadmapComponent implements OnInit {
     this.editingProject.set(project);
     // When editing, also make it the active (visually selected) project
     this.activeProject.set(project);
+  }
+
+  openAddModal(): void {
+    const newProject: ProjectBubble = {
+      id: 0, // 0 indicates a new project to the service
+      name: 'Nouveau projet',
+      service: 'IT', // Default service
+      complexity: 100,
+      value: 100,
+      startDate: new Date(this.viewStartDate())
+    };
+    this.editingProject.set(newProject);
   }
 
   closeEditModal(): void {
