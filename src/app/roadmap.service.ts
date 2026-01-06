@@ -12,15 +12,18 @@ export class RoadmapService {
 
   constructor() { }
 
-  // Utility to map service to a color class (for CSS)
-  getServiceColor(service: ProjectBubble['service']): string {
-    switch (service) {
-      case 'Finance': return 'finance-bubble';
-      case 'Marketing': return 'marketing-bubble';
-      case 'IT': return 'it-bubble';
-      case 'HR': return 'hr-bubble';
-      default: return 'default-bubble';
+  // Utility to map service to a color (returns hex/HSL string)
+  getServiceColor(service: string): string {
+
+    // Generate a consistent color based on the service name
+    let hash = 0;
+    for (let i = 0; i < service.length; i++) {
+      hash = service.charCodeAt(i) + ((hash << 5) - hash);
     }
+
+    // Use HSL for better visual consistency (Saturation 70%, Lightness 50%)
+    const h = Math.abs(hash % 360);
+    return `hsl(${h}, 70%, 50%)`;
   }
 
   // Function to update project position after dragging (if needed later)

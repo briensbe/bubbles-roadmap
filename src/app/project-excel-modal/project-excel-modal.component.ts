@@ -72,7 +72,7 @@ export class ProjectExcelModalComponent {
         reader.onload = (e: any) => {
             try {
                 const data = new Uint8Array(e.target.result);
-                const workbook = XLSX.read(data, { type: 'array' });
+                const workbook = XLSX.read(data, { type: 'array', cellDates: true });
                 const firstSheetName = workbook.SheetNames[0];
                 const worksheet = workbook.Sheets[firstSheetName];
                 const jsonData = XLSX.utils.sheet_to_json(worksheet) as any[];
@@ -93,21 +93,27 @@ export class ProjectExcelModalComponent {
                 this.importedProjects = jsonData.map((row: any): ProjectBubble => {
                     // Try to parse the date
                     let rawDate = row['Start Date'];
-                    if (typeof rawDate === 'number') {
-                        // Excel serial date
-                        rawDate = XLSX.utils.format_cell({ v: rawDate, t: 'd' });
-                    } else if (typeof rawDate === 'string') {
-                        // Already a string date mais à parser pour gérer le format dd/mm/yyyy
-                        rawDate = this.parseDate(row['Start Date']);
+
+                    let startDate: Date;
+                    if (rawDate instanceof Date) {
+                        startDate = rawDate;
+                    } else if (typeof rawDate === 'number') {
+                        // This shouldn't happen much with cellDates: true, but just in case
+                        startDate = XLSX.utils.format_cell({ v: rawDate, t: 'd' }) as any;
+                        if (!(startDate instanceof Date)) startDate = new Date(rawDate);
+                    } else {
+                        // try to parse string or other formats
+                        const parsed = this.parseDate(rawDate);
+                        startDate = parsed instanceof Date ? parsed : new Date(rawDate);
                     }
 
                     const project: ProjectBubble = {
                         id: Number(row['ID']),
                         name: String(row['Name']),
-                        service: String(row['Service']) as any,
+                        service: String(row['Service']),
                         complexity: Number(row['Complexity']),
                         value: Number(row['Value']),
-                        startDate: rawDate instanceof Date ? rawDate : new Date(rawDate)
+                        startDate: startDate
                     };
 
                     return project;
@@ -148,8 +154,8 @@ export class ProjectExcelModalComponent {
 
             if (isNaN(p.id)) throw new Error(`${prefix}ID must be a number.`);
             if (!p.name || p.name.trim() === '') throw new Error(`${prefix}Name is required.`);
-            if (!['Finance', 'Marketing', 'IT', 'HR'].includes(p.service)) {
-                throw new Error(`${prefix}Service must be one of: Finance, Marketing, IT, HR.`);
+            if (!p.service || p.service.trim() === '') {
+                throw new Error(`${prefix}Service is required.`);
             }
             if (isNaN(p.complexity)) throw new Error(`${prefix}Complexity must be a number.`);
             if (isNaN(p.value)) throw new Error(`${prefix}Value must be a number.`);

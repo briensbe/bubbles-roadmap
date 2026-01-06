@@ -188,20 +188,6 @@
   /*border-radius: 0 0 50% 0;*/
 }
 
-/* Color Coding based on Service */
-.finance-bubble {
-  background-color: #3498db;
-} /* Blue */
-.marketing-bubble {
-  background-color: #2ecc71;
-} /* Green */
-.it-bubble {
-  background-color: #e74c3c;
-} /* Red */
-.hr-bubble {
-  background-color: #f39c12;
-} /* Orange */
-
 /* Dragging state */
 .cdk-drag-dragging {
   opacity: 0.8;

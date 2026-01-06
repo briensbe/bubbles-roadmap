@@ -25,7 +25,11 @@ export class ProjectEditModalComponent implements OnInit {
   private mousedownTarget: EventTarget | null = null;
 
   // Available options for Service dropdown
-  serviceOptions: ProjectBubble['service'][] = ['Finance', 'Marketing', 'IT', 'HR'];
+  serviceOptions: string[] = [];
+
+  // State for hybrid selection (Select + Text Input)
+  isAddingNewService: boolean = false;
+  selectedService: string = '';
 
   // Configuration (aligned with RoadmapComponent)
   readonly CONFIG = ROADMAP_CONFIG;
@@ -45,6 +49,41 @@ export class ProjectEditModalComponent implements OnInit {
   ngOnInit(): void {
     // Create a deep copy of the project for editing
     this.editedProject = { ...this.project };
+
+    // Update service options with all distinct services currently in use
+    const currentProjects = this.roadmapService.projects();
+    const distinctServices = new Set<string>();
+
+    // Add all services from existing projects
+    currentProjects.forEach(p => {
+      if (p.service) distinctServices.add(p.service);
+    });
+
+    // Also ensure the current project's service is in the list
+    if (this.project.service) {
+      distinctServices.add(this.project.service);
+    }
+
+    this.serviceOptions = Array.from(distinctServices).sort();
+
+    // Initialize selection state
+    if (this.project.service) {
+      this.selectedService = this.project.service;
+      this.isAddingNewService = false;
+    } else {
+      this.selectedService = '';
+      this.isAddingNewService = false;
+    }
+  }
+
+  onServiceChange(): void {
+    if (this.selectedService === 'NEW_SERVICE') {
+      this.isAddingNewService = true;
+      this.editedProject.service = ''; // Clear for user to type
+    } else {
+      this.isAddingNewService = false;
+      this.editedProject.service = this.selectedService;
+    }
   }
 
   updateStartDate(dateString: string): void {

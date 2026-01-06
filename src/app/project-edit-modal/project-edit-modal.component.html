@@ -14,11 +14,32 @@
 
       <div class="form-group">
         <label for="service">Service</label>
-        <select id="service" [(ngModel)]="editedProject.service" name="service" required>
+        <select
+          id="service"
+          [(ngModel)]="selectedService"
+          name="service"
+          (change)="onServiceChange()"
+          required
+        >
           @for (service of serviceOptions; track service) {
           <option [value]="service">{{ service }}</option>
           }
+          <option value="NEW_SERVICE">-- + Ajouter un nouveau service --</option>
         </select>
+      </div>
+
+      <div class="form-group" [style.marginTop]="isAddingNewService ? '-10px' : null">
+        @if (isAddingNewService) {
+        <label for="new-service">Nom du nouveau service</label>
+        <input
+          id="new-service"
+          [(ngModel)]="editedProject.service"
+          name="newService"
+          placeholder="Entrez le nom du service"
+          required
+          autofocus
+        />
+        }
       </div>
 
       <div class="form-group">

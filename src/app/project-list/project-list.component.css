@@ -92,20 +92,6 @@
   margin-right: 8px;
 }
 
-/* Service Colors (Matching ProjectBubble) */
-.finance-bubble {
-  background-color: #3b82f6;
-} /* Blue */
-.marketing-bubble {
-  background-color: #ec4899;
-} /* Pink */
-.it-bubble {
-  background-color: #8b5cf6;
-} /* Purple */
-.hr-bubble {
-  background-color: #10b981;
-} /* Green */
-
 .actions-column {
   text-align: center !important;
   width: 100px;

@@ -3,7 +3,7 @@ import { Signal } from '@angular/core';
 export interface ProjectBubble {
   id: number;
   name: string;
-  service: 'Finance' | 'Marketing' | 'IT' | 'HR'; // Example services for color coding
+  service: string; // Dynamic service name
   complexity: number; // 0-500, determines size
   value: number; // 0-500, determines Y position
   startDate: Date; // Determines initial X position

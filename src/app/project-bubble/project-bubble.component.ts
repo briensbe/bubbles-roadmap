@@ -30,7 +30,7 @@ export class ProjectBubbleComponent implements OnInit {
   roadmapService = inject(RoadmapService);
 
   size: number = 0;
-  serviceColorClass: string = '';
+  serviceColor: string = '';
 
   // Resize tracking
   isResizing: boolean = false;
@@ -63,13 +63,13 @@ export class ProjectBubbleComponent implements OnInit {
 
   ngOnInit(): void {
     this.calculateSize();
-    this.serviceColorClass = this.roadmapService.getServiceColor(this.project.service);
+    this.serviceColor = this.roadmapService.getServiceColor(this.project.service);
   }
 
   ngOnChanges(): void {
     // Recalculate size if project input changes (e.g., after modal edit)
     this.calculateSize();
-    this.serviceColorClass = this.roadmapService.getServiceColor(this.project.service);
+    this.serviceColor = this.roadmapService.getServiceColor(this.project.service);
   }
 
   calculateSize(): void {

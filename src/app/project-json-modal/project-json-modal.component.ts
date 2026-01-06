@@ -85,8 +85,8 @@ export class ProjectJsonModalComponent implements OnInit {
             const prefix = `Project at index ${index} (ID: ${p.id || 'N/A'}): `;
             if (typeof p.id !== 'number') throw new Error(`${prefix}Field "id" must be a number.`);
             if (typeof p.name !== 'string') throw new Error(`${prefix}Field "name" must be a string.`);
-            if (!['Finance', 'Marketing', 'IT', 'HR'].includes(p.service)) {
-                throw new Error(`${prefix}Field "service" must be one of: Finance, Marketing, IT, HR.`);
+            if (typeof p.service !== 'string' || p.service.trim() === '') {
+                throw new Error(`${prefix}Field "service" must be a non-empty string.`);
             }
 
             if (typeof p.complexity !== 'number') throw new Error(`${prefix}Field "complexity" must be a number.`);

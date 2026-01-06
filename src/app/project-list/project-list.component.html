@@ -39,7 +39,7 @@
         <td>
           <span
             class="service-indicator"
-            [ngClass]="roadmapService.getServiceColor(project.service)"
+            [style.backgroundColor]="roadmapService.getServiceColor(project.service)"
           ></span>
           {{ project.service }}
         </td>
