@@ -10,6 +10,14 @@ export class RoadmapService {
 
   readonly projects: Signal<ProjectBubble[]> = this.projectsSource.asReadonly();
 
+  readonly distinctServices = computed(() => {
+    const projects = this.projects();
+    const services = new Set<string>();
+    projects.forEach(p => services.add(p.service));
+    return Array.from(services).sort();
+  });
+
+
   constructor() { }
 
   // Utility to map service to a color (returns hex/HSL string)

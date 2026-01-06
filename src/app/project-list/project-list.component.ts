@@ -10,7 +10,7 @@ import {
   LucideAngularModule,
   Pencil,
   Trash2,
-  PlusCircle,
+  Plus,
   RefreshCw,
   FileJson,
   FileSpreadsheet
@@ -39,7 +39,7 @@ export class ProjectListComponent {
   // Icons for the template
   readonly Pencil = Pencil;
   readonly Trash2 = Trash2;
-  readonly PlusCircle = PlusCircle;
+  readonly Plus = Plus;
   readonly RefreshCw = RefreshCw;
   readonly FileJson = FileJson;
   readonly FileSpreadsheet = FileSpreadsheet;

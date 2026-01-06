@@ -33,7 +33,7 @@
 
       <button class="nav-btn btn-add" (click)="openAddModal()">
         <lucide-icon [img]="Plus" [size]="20"></lucide-icon>
-        <span>Ajouter un projet</span>
+        <span>Add project</span>
       </button>
 
       <label class="toggle-switch">
@@ -130,18 +130,24 @@
     </div>
 
     <div class="complexity-legend">
-      <h4>Service (Color) Legend</h4>
-      <div class="legend-items-container">
-        @for (service of serviceColors; track service.name) {
-        <div class="legend-item">
+      <h4>Service Legend (Color)</h4>
+      <div class="legend-items-container service-legend-container">
+        @for (service of visibleServices(); track service) {
+        <div class="legend-item service-legend-item">
           <div
             class="legend-bubble"
-            [ngClass]="service.class"
-            [style.width.px]="20"
-            [style.height.px]="20"
+            [style.background-color]="roadmapService.getServiceColor(service)"
+            [style.width.px]="16"
+            [style.height.px]="16"
           ></div>
-          <span>{{ service.name }}</span>
+          <span>{{ service }}</span>
         </div>
+        } @if (visibleServiceCount() < roadmapService.distinctServices().length) {
+        <button class="show-more-btn" (click)="$event.stopPropagation(); showMoreServices()">
+          Afficher plus (+{{
+            Math.min(3, roadmapService.distinctServices().length - visibleServiceCount())
+          }})
+        </button>
         }
       </div>
     </div>

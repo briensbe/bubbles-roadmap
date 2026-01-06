@@ -20,6 +20,8 @@ export class RoadmapComponent implements OnInit {
   readonly ChevronLeft = ChevronLeft;
   readonly ChevronRight = ChevronRight;
   readonly Plus = Plus;
+  readonly Math = Math;
+
 
   roadmapService = inject(RoadmapService);
   projects = this.roadmapService.projects;
@@ -139,12 +141,13 @@ export class RoadmapComponent implements OnInit {
   private GRID_WIDTH = 2400; // Increased for 24 months (100px per month)
   private GRID_HEIGHT = 600;
 
-  serviceColors = [
-    { name: 'Finance', class: 'finance-bubble' },
-    { name: 'Marketing', class: 'marketing-bubble' },
-    { name: 'IT', class: 'it-bubble' },
-    { name: 'HR', class: 'hr-bubble' },
-  ];
+  visibleServiceCount = signal<number>(3);
+  visibleServices = computed(() => this.roadmapService.distinctServices().slice(0, this.visibleServiceCount()));
+
+  showMoreServices(): void {
+    this.visibleServiceCount.update(count => count + 3);
+  }
+
 
   complexityLegend = [
     { label: 'XS', size: 50, description: 'very simple', range: [0, 50] },

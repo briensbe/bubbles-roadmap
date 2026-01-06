@@ -110,7 +110,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background-color: #2ecc71;
+  background-color: #007bff;
   color: white;
   border: none;
   padding: 8px 16px;
@@ -122,7 +122,7 @@
 }
 
 .btn-add:hover {
-  background-color: #27ae60;
+  /*background-color: #2200ff;*/
   box-shadow: 0 4px 8px rgba(46, 204, 113, 0.3);
   transform: translateY(-1px);
 }
@@ -342,6 +342,58 @@ input:checked + .slider:before {
   gap: 25px;
 }
 
+.service-legend-container {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px; /* More gap between rows */
+  width: 100%;
+}
+
+.legend-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+.service-legend-item {
+  flex-direction: row !important; /* Force row layout */
+  gap: 16px;
+  align-items: center;
+  text-align: left;
+  margin-bottom: 0;
+}
+
+.service-legend-item span {
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: #1a1a1a;
+  margin: 0;
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.show-more-btn {
+  background: none;
+  border: 1px solid #3498db;
+  color: #3498db;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 4px;
+}
+
+.show-more-btn:hover {
+  background: rgba(52, 152, 219, 0.1);
+  transform: translateY(-1px);
+}
+
 .legend-item {
   display: flex;
   flex-direction: column;
@@ -368,18 +420,4 @@ input:checked + .slider:before {
   font-size: 0.95rem;
   color: #000;
   font-weight: 600;
-}
-
-/* Color Coding based on Service */
-.finance-bubble {
-  background-color: #3498db;
-}
-.marketing-bubble {
-  background-color: #2ecc71;
-}
-.it-bubble {
-  background-color: #e74c3c;
-}
-.hr-bubble {
-  background-color: #f39c12;
 }

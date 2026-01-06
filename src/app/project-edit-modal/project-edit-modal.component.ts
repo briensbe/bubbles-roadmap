@@ -50,21 +50,9 @@ export class ProjectEditModalComponent implements OnInit {
     // Create a deep copy of the project for editing
     this.editedProject = { ...this.project };
 
-    // Update service options with all distinct services currently in use
-    const currentProjects = this.roadmapService.projects();
-    const distinctServices = new Set<string>();
+    // Use distinct services from the service
+    this.serviceOptions = this.roadmapService.distinctServices();
 
-    // Add all services from existing projects
-    currentProjects.forEach(p => {
-      if (p.service) distinctServices.add(p.service);
-    });
-
-    // Also ensure the current project's service is in the list
-    if (this.project.service) {
-      distinctServices.add(this.project.service);
-    }
-
-    this.serviceOptions = Array.from(distinctServices).sort();
 
     // Initialize selection state
     if (this.project.service) {
