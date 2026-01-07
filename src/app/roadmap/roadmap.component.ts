@@ -5,13 +5,14 @@ import { ProjectBubbleComponent } from '../project-bubble/project-bubble.compone
 import { ProjectBubble } from '../models/project.model';
 import { ProjectEditModalComponent } from '../project-edit-modal/project-edit-modal.component';
 import { ROADMAP_CONFIG } from '../models/project.constants';
-import { LucideAngularModule, ChevronLeft, ChevronRight, Plus } from 'lucide-angular';
+import { LucideAngularModule, ChevronLeft, ChevronRight, Plus, Search } from 'lucide-angular';
+import { FormsModule } from '@angular/forms';
 import { range } from 'rxjs';
 
 @Component({
   selector: 'app-roadmap',
   standalone: true,
-  imports: [CommonModule, ProjectBubbleComponent, ProjectEditModalComponent, LucideAngularModule],
+  imports: [CommonModule, ProjectBubbleComponent, ProjectEditModalComponent, LucideAngularModule, FormsModule],
   templateUrl: './roadmap.component.html',
   styleUrl: './roadmap.component.css'
 })
@@ -20,6 +21,7 @@ export class RoadmapComponent implements OnInit {
   readonly ChevronLeft = ChevronLeft;
   readonly ChevronRight = ChevronRight;
   readonly Plus = Plus;
+  readonly Search = Search;
   readonly Math = Math;
 
 
@@ -56,7 +58,15 @@ export class RoadmapComponent implements OnInit {
 
     return projects.filter(p => {
       const pDate = new Date(p.startDate);
-      return pDate >= start && pDate <= end;
+      const inView = pDate >= start && pDate <= end;
+
+      const search = this.searchText().toLowerCase();
+      if (!search) return inView;
+
+      const nameMatch = p.name.toLowerCase().includes(search);
+      const keyMatch = p.projectKey?.toLowerCase().includes(search);
+
+      return inView && (nameMatch || keyMatch);
     });
   });
 
@@ -123,6 +133,7 @@ export class RoadmapComponent implements OnInit {
   editingProject = signal<ProjectBubble | null>(null);
   isXAxisLocked = signal<boolean>(false);
   showLabelsOnHoverOnly = signal<boolean>(true);
+  searchText = signal<string>('');
   topmostProjectId = signal<number | null>(null);
 
   /**

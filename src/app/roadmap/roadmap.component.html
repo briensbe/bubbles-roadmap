@@ -31,6 +31,17 @@
         </button>
       </div>
 
+      <div class="search-container">
+        <lucide-icon [img]="Search" [size]="18" class="search-icon"></lucide-icon>
+        <input
+          type="text"
+          [ngModel]="searchText()"
+          (ngModelChange)="searchText.set($event)"
+          placeholder="Filtrer les projets..."
+          class="search-input"
+        />
+      </div>
+
       <button class="nav-btn btn-add" (click)="openAddModal()">
         <lucide-icon [img]="Plus" [size]="20"></lucide-icon>
         <span>Add project</span>
