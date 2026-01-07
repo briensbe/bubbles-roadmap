@@ -30,7 +30,7 @@
     </div>
   </div>
 
-  <div class="bubble-label" [style.bottom.px]="size + 8">
+  <div class="bubble-label" [class.hover-only]="showLabelsOnHoverOnly" [style.bottom.px]="size + 8">
     <span class="bubble-name">
       <ng-container *ngIf="project.projectKey">{{ project.projectKey }} - </ng-container>
       {{ project.name }}

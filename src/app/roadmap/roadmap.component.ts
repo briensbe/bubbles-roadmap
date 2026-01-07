@@ -122,6 +122,7 @@ export class RoadmapComponent implements OnInit {
   activeProject = signal<ProjectBubble | null>(null);
   editingProject = signal<ProjectBubble | null>(null);
   isXAxisLocked = signal<boolean>(false);
+  showLabelsOnHoverOnly = signal<boolean>(true);
   topmostProjectId = signal<number | null>(null);
 
   /**

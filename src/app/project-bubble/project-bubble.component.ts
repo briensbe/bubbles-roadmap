@@ -16,6 +16,7 @@ export class ProjectBubbleComponent implements OnInit {
   @Input({ required: true }) project!: ProjectBubble;
   @Input() isSelected: boolean = false;
   @Input() lockXAxis: boolean = false;
+  @Input() showLabelsOnHoverOnly: boolean = false;
 
   // Inputs for initial positioning (handled by parent component)
   @Input({ required: true }) initialX!: number;

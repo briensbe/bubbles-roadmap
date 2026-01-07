@@ -93,6 +93,7 @@
             [initialX]="calculateXPosition(project.startDate)"
             [initialY]="calculateYPosition(project.value)"
             [lockXAxis]="isXAxisLocked()"
+            [showLabelsOnHoverOnly]="showLabelsOnHoverOnly()"
             [style.position]="'absolute'"
             [style.left.px]="calculateXPosition(project.startDate)"
             [style.bottom.px]="calculateYPosition(project.value)"
@@ -151,13 +152,28 @@
         }
       </div>
     </div>
-  </div>
-</div>
 
-<!-- Edit Modal -->
-@if (editingProject()) {
-<app-project-edit-modal
-  [project]="editingProject()!"
-  (close)="closeEditModal()"
-></app-project-edit-modal>
-}
+    <div class="complexity-legend">
+      <h4>Options</h4>
+      <div class="legend-items-container">
+        <label class="toggle-switch">
+          <input
+            type="checkbox"
+            [checked]="showLabelsOnHoverOnly()"
+            (change)="showLabelsOnHoverOnly.set(!showLabelsOnHoverOnly())"
+          />
+          <span class="slider"></span>
+          <span class="toggle-label">Labels au survol uniquement</span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  @if (editingProject()) {
+  <app-project-edit-modal
+    [project]="editingProject()!"
+    (close)="closeEditModal()"
+  ></app-project-edit-modal>
+  }
+</div>
