@@ -24,6 +24,7 @@
   <table class="project-table">
     <thead>
       <tr>
+        <th>Key</th>
         <th>Name</th>
         <th>Service</th>
         <th>Value</th>
@@ -35,6 +36,7 @@
     <tbody>
       @for (project of projects(); track project.id) {
       <tr>
+        <td>{{ project.projectKey || '-' }}</td>
         <td>{{ project.name }}</td>
         <td>
           <span

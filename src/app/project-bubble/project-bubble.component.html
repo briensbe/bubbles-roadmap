@@ -31,7 +31,10 @@
   </div>
 
   <div class="bubble-label" [style.bottom.px]="size + 8">
-    <span class="bubble-name">{{ project.name }}</span>
+    <span class="bubble-name">
+      <ng-container *ngIf="project.projectKey">{{ project.projectKey }} - </ng-container>
+      {{ project.name }}
+    </span>
     <span class="bubble-service">{{ project.service }}</span>
     <div class="badge-info" *ngIf="displayInfoInBadge">
       <span>V: {{ project.value }}</span>

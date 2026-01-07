@@ -2,6 +2,7 @@ import { Signal } from '@angular/core';
 
 export interface ProjectBubble {
   id: number;
+  projectKey?: string; // Optional project key (e.g., PROJ-123)
   name: string;
   service: string; // Dynamic service name
   complexity: number; // 0-500, determines size

@@ -43,6 +43,7 @@ export class ProjectExcelModalComponent {
         try {
             const dataToExport = this.projects.map(p => ({
                 'ID': p.id,
+                'Project Key': p.projectKey || '',
                 'Name': p.name,
                 'Service': p.service,
                 'Complexity': p.complexity,
@@ -109,6 +110,7 @@ export class ProjectExcelModalComponent {
 
                     const project: ProjectBubble = {
                         id: Number(row['ID']),
+                        projectKey: row['Project Key'] ? String(row['Project Key']) : undefined,
                         name: String(row['Name']),
                         service: String(row['Service']),
                         complexity: Number(row['Complexity']),

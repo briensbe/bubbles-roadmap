@@ -84,6 +84,9 @@ export class ProjectJsonModalComponent implements OnInit {
         parsedData.forEach((p, index) => {
             const prefix = `Project at index ${index} (ID: ${p.id || 'N/A'}): `;
             if (typeof p.id !== 'number') throw new Error(`${prefix}Field "id" must be a number.`);
+            if (p.projectKey !== undefined && typeof p.projectKey !== 'string') {
+                throw new Error(`${prefix}Field "projectKey" must be a string.`);
+            }
             if (typeof p.name !== 'string') throw new Error(`${prefix}Field "name" must be a string.`);
             if (typeof p.service !== 'string' || p.service.trim() === '') {
                 throw new Error(`${prefix}Field "service" must be a non-empty string.`);
