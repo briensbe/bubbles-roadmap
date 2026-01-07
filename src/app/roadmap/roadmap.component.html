@@ -35,16 +35,6 @@
         <lucide-icon [img]="Plus" [size]="20"></lucide-icon>
         <span>Add project</span>
       </button>
-
-      <label class="toggle-switch">
-        <input
-          type="checkbox"
-          [checked]="isXAxisLocked()"
-          (change)="isXAxisLocked.set(!isXAxisLocked())"
-        />
-        <span class="slider"></span>
-        <span class="toggle-label">🔒 Lock Project Dates</span>
-      </label>
     </div>
   </div>
 
@@ -164,6 +154,17 @@
           />
           <span class="slider"></span>
           <span class="toggle-label">Labels au survol uniquement</span>
+        </label>
+      </div>
+      <div class="legend-items-container">
+        <label class="toggle-switch">
+          <input
+            type="checkbox"
+            [checked]="isXAxisLocked()"
+            (change)="isXAxisLocked.set(!isXAxisLocked())"
+          />
+          <span class="slider"></span>
+          <span class="toggle-label">Lock Project Dates (x-axis)</span>
         </label>
       </div>
     </div>
