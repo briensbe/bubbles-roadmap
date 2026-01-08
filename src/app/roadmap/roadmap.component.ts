@@ -49,6 +49,10 @@ export class RoadmapComponent implements OnInit {
     return months;
   }
 
+  // Filter states
+  activeComplexityFilters = signal<Set<string>>(new Set(['XS', 'S', 'M', 'L', 'XL'])); // All active by default
+  activeServiceFilters = signal<Set<string>>(new Set()); // Will be populated on init
+
   // Filter projects to only show those visible in the current view
   visibleProjects = computed(() => {
     const projects = this.projects();
@@ -60,15 +64,25 @@ export class RoadmapComponent implements OnInit {
       const pDate = new Date(p.startDate);
       const inView = pDate >= start && pDate <= end;
 
+      // Search filter
       const search = this.searchText().toLowerCase();
-      if (!search) return inView;
+      const searchMatch = !search ||
+        p.name.toLowerCase().includes(search) ||
+        p.projectKey?.toLowerCase().includes(search);
 
-      const nameMatch = p.name.toLowerCase().includes(search);
-      const keyMatch = p.projectKey?.toLowerCase().includes(search);
+      // Complexity filter
+      const complexityLabel = this.getComplexityLabel(p.complexity);
+      const complexityMatch = this.activeComplexityFilters().has(complexityLabel);
 
-      return inView && (nameMatch || keyMatch);
+      // Service filter
+      const serviceMatch = this.activeServiceFilters().has(p.service);
+
+      return inView && searchMatch && complexityMatch && serviceMatch;
     });
   });
+
+  // Computed property for filtered project count
+  filteredProjectCount = computed(() => this.visibleProjects().length);
 
   // Computed property to count projects per visible year
   projectCounts = computed(() => {
@@ -160,6 +174,57 @@ export class RoadmapComponent implements OnInit {
     this.visibleServiceCount.update(count => count + 3);
   }
 
+  // Filter management methods
+  toggleComplexityFilter(label: string): void {
+    this.activeComplexityFilters.update(filters => {
+      const newFilters = new Set(filters);
+      if (newFilters.has(label)) {
+        newFilters.delete(label);
+      } else {
+        newFilters.add(label);
+      }
+      return newFilters;
+    });
+  }
+
+  toggleServiceFilter(service: string): void {
+    this.activeServiceFilters.update(filters => {
+      const newFilters = new Set(filters);
+      if (newFilters.has(service)) {
+        newFilters.delete(service);
+      } else {
+        newFilters.add(service);
+      }
+      return newFilters;
+    });
+  }
+
+  clearAllFilters(): void {
+    this.activeComplexityFilters.set(new Set(['XS', 'S', 'M', 'L', 'XL']));
+    this.activeServiceFilters.set(new Set(this.roadmapService.distinctServices()));
+  }
+
+  selectAllFilters(): void {
+    this.activeComplexityFilters.set(new Set(['XS', 'S', 'M', 'L', 'XL']));
+    this.activeServiceFilters.set(new Set(this.roadmapService.distinctServices()));
+  }
+
+  getComplexityLabel(complexity: number): string {
+    if (complexity <= 50) return 'XS';
+    if (complexity <= 100) return 'S';
+    if (complexity <= 250) return 'M';
+    if (complexity <= 400) return 'L';
+    return 'XL';
+  }
+
+  isComplexityFilterActive(label: string): boolean {
+    return this.activeComplexityFilters().has(label);
+  }
+
+  isServiceFilterActive(service: string): boolean {
+    return this.activeServiceFilters().has(service);
+  }
+
 
   complexityLegend = [
     { label: 'XS', size: 50, description: 'very simple', range: [0, 50] },
@@ -179,6 +244,8 @@ export class RoadmapComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // Initialize service filters with all services
+    this.activeServiceFilters.set(new Set(this.roadmapService.distinctServices()));
   }
 
   /**

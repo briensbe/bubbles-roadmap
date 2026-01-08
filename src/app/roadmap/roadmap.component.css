@@ -344,85 +344,197 @@ input:checked + .slider:before {
   border-left: 1px dashed #eee;
 }
 
-/* FIXED LEGENDS */
+/* INTERACTIVE FILTERS */
 .fixed-legends {
   display: flex;
-  justify-content: center;
-  margin-top: 20px; /* Space between chart and legend */
-  padding-bottom: 20px;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 20px;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   flex-shrink: 0;
 }
 
-.complexity-legend {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+/* Filters Header */
+.filters-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.filters-header h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.project-count {
   font-size: 0.9rem;
-  margin-right: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: flex-start;
-  background: white;
-}
-
-.complexity-legend h4 {
-  margin: 0;
-  width: 100%;
-}
-
-.legend-items-container {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-end;
-  gap: 25px;
-}
-
-.service-legend-container {
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 16px; /* More gap between rows */
-  width: 100%;
-}
-
-.legend-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 5px;
-  text-align: center;
-}
-
-.service-legend-item {
-  flex-direction: row !important; /* Force row layout */
-  gap: 16px;
-  align-items: center;
-  text-align: left;
-  margin-bottom: 0;
-}
-
-.service-legend-item span {
   font-weight: 500;
-  font-size: 0.95rem;
-  color: #1a1a1a;
-  margin: 0;
-  max-width: 150px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  color: #7f8c8d;
+  margin-left: 8px;
 }
 
+.clear-all-btn {
+  background: transparent;
+  border: 1px solid #3498db;
+  color: #3498db;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clear-all-btn:hover {
+  background: #3498db;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+}
+
+/* Filter Section */
+.filter-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.filter-section h5 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #34495e;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Filter Badges Container */
+.filter-badges-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+/* Filter Badge Base */
+.filter-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 24px;
+  border: 2px solid transparent;
+  background: #f8f9fa;
+  color: #95a5a6;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  opacity: 0.5;
+}
+
+.filter-badge::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.filter-badge:hover {
+  transform: translateY(-2px) scale(1.02);
+  opacity: 0.7;
+}
+
+.filter-badge:hover::before {
+  opacity: 1;
+}
+
+/* Active State */
+.filter-badge.active {
+  opacity: 1;
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+  border-color: #2980b9;
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+}
+
+.filter-badge.active:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 6px 16px rgba(52, 152, 219, 0.5);
+}
+
+/* Complexity Badge Specific */
+.complexity-badge .badge-bubble {
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  flex-shrink: 0;
+}
+
+.complexity-badge.active .badge-bubble {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: white;
+}
+
+.badge-label {
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.badge-range {
+  font-size: 0.75rem;
+  opacity: 0.8;
+  font-weight: 500;
+}
+
+/* Service Badge Specific */
+.service-badge {
+  background: #f8f9fa;
+}
+
+.service-badge.active {
+  background: var(--service-color);
+  border-color: var(--service-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.service-color-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--service-color);
+  flex-shrink: 0;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.service-badge.active .service-color-dot {
+  background: white;
+  border-color: white;
+}
+
+/* Show More Button */
 .show-more-btn {
   background: none;
   border: 1px solid #3498db;
   color: #3498db;
-  padding: 4px 12px;
-  border-radius: 12px;
+  padding: 6px 14px;
+  border-radius: 20px;
   font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  margin-top: 4px;
 }
 
 .show-more-btn:hover {
@@ -430,30 +542,10 @@ input:checked + .slider:before {
   transform: translateY(-1px);
 }
 
-.legend-item {
+/* Legacy legend items container for Options section */
+.legend-items-container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 5px;
-  text-align: center;
-}
-
-.legend-bubble {
-  border-radius: 50%;
-  background-color: #ccc;
-  border: 1px solid #aaa;
-  margin-bottom: 5px;
-}
-
-.legend-item span {
-  display: block;
-  font-size: 0.85rem;
-  color: #555;
-  margin-bottom: 2px;
-}
-
-.legend-item span:first-of-type {
-  font-size: 0.95rem;
-  color: #000;
-  font-weight: 600;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 25px;
 }

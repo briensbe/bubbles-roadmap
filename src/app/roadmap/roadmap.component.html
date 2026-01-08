@@ -111,39 +111,51 @@
     </div>
   </div>
 
-  <!-- 3. FIXED LEGENDS -->
+  <!-- 3. INTERACTIVE FILTERS -->
   <div class="fixed-legends">
-    <div class="complexity-legend">
-      <h4>Complexity (Size) Legend</h4>
-      <div class="legend-items-container">
+    <!-- Header with count and controls -->
+    <div class="filters-header">
+      <h4>
+        Filtres <span class="project-count">({{ filteredProjectCount() }} projets)</span>
+      </h4>
+      <button class="clear-all-btn" (click)="selectAllFilters()">Tout sélectionner</button>
+    </div>
+    <!-- Complexity Filters -->
+    <div class="filter-section">
+      <h5>Complexité</h5>
+      <div class="filter-badges-container">
         @for (item of complexityLegend; track item.label) {
-        <div class="legend-item">
+        <button
+          class="filter-badge complexity-badge"
+          [class.active]="isComplexityFilterActive(item.label)"
+          (click)="toggleComplexityFilter(item.label)"
+        >
           <div
-            class="legend-bubble"
-            [style.width.px]="getLegendBubbleSize(item.size)"
-            [style.height.px]="getLegendBubbleSize(item.size)"
+            class="badge-bubble"
+            [style.width.px]="getLegendBubbleSize(item.size) * 0.5"
+            [style.height.px]="getLegendBubbleSize(item.size) * 0.5"
           ></div>
-          <span>{{ item.label }}</span>
-          <span>{{ item.description }}</span>
-          <span>{{ item.range[0] }} - {{ item.range[1] }}</span>
-        </div>
+          <span class="badge-label">{{ item.label }}</span>
+          <span class="badge-range">{{ item.range[0] }}-{{ item.range[1] }}</span>
+        </button>
         }
       </div>
     </div>
 
-    <div class="complexity-legend">
-      <h4>Service Legend (Color)</h4>
-      <div class="legend-items-container service-legend-container">
+    <!-- Service Filters -->
+    <div class="filter-section">
+      <h5>Services</h5>
+      <div class="filter-badges-container service-badges">
         @for (service of visibleServices(); track service) {
-        <div class="legend-item service-legend-item">
-          <div
-            class="legend-bubble"
-            [style.background-color]="roadmapService.getServiceColor(service)"
-            [style.width.px]="16"
-            [style.height.px]="16"
-          ></div>
-          <span>{{ service }}</span>
-        </div>
+        <button
+          class="filter-badge service-badge"
+          [class.active]="isServiceFilterActive(service)"
+          [style.--service-color]="roadmapService.getServiceColor(service)"
+          (click)="toggleServiceFilter(service)"
+        >
+          <div class="service-color-dot"></div>
+          <span class="badge-label">{{ service }}</span>
+        </button>
         } @if (visibleServiceCount() < roadmapService.distinctServices().length) {
         <button class="show-more-btn" (click)="$event.stopPropagation(); showMoreServices()">
           Afficher plus (+{{
@@ -154,8 +166,9 @@
       </div>
     </div>
 
-    <div class="complexity-legend">
-      <h4>Options</h4>
+    <!-- Options Section -->
+    <div class="filter-section">
+      <h5>Options</h5>
       <div class="legend-items-container">
         <label class="toggle-switch">
           <input
