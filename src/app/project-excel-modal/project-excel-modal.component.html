@@ -56,9 +56,14 @@
     <div class="modal-footer">
       <div class="footer-actions">
         <button class="btn btn-secondary" (click)="cancel()">Cancel</button>
-        <button class="btn btn-primary" (click)="saveChanges()" [disabled]="!importedProjects">
-          <lucide-icon [name]="Save" class="icon-sm"></lucide-icon>
-          Update Projects
+        <button
+          class="btn btn-primary"
+          (click)="saveChanges()"
+          [disabled]="!importedProjects || isProcessing"
+        >
+          <lucide-icon *ngIf="!isProcessing" [name]="Save" class="icon-sm"></lucide-icon>
+          <lucide-icon *ngIf="isProcessing" [name]="Loader2" class="icon-sm spin"></lucide-icon>
+          {{ isProcessing ? 'Updating...' : 'Update Projects' }}
         </button>
       </div>
     </div>

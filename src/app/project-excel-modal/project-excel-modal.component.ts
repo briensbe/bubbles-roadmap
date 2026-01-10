@@ -10,7 +10,8 @@ import {
     X,
     CheckCircle,
     AlertCircle,
-    Save
+    Save,
+    Loader2
 } from 'lucide-angular';
 import * as XLSX from 'xlsx';
 
@@ -30,6 +31,7 @@ export class ProjectExcelModalComponent {
     errorMessage: string | null = null;
     successMessage: string | null = null;
     importedProjects: ProjectBubble[] | null = null;
+    isProcessing: boolean = false;
 
     // Icons
     readonly FileSpreadsheet = FileSpreadsheet;
@@ -38,6 +40,7 @@ export class ProjectExcelModalComponent {
     readonly CheckCircle = CheckCircle;
     readonly AlertCircle = AlertCircle;
     readonly Save = Save;
+    readonly Loader2 = Loader2;
 
     exportToExcel(): void {
         try {
@@ -165,11 +168,18 @@ export class ProjectExcelModalComponent {
         });
     }
 
-    saveChanges(): void {
+    async saveChanges(): Promise<void> {
         if (!this.importedProjects) return;
+
+        this.isProcessing = true;
+
+        // Artificial delay to show the loader
+        await new Promise(resolve => setTimeout(resolve, 1000));
 
         this.roadmapService.replaceProjects(this.importedProjects);
         this.successMessage = 'Projects imported successfully!';
+        this.isProcessing = false;
+
         setTimeout(() => {
             this.successMessage = null;
             this.close.emit();

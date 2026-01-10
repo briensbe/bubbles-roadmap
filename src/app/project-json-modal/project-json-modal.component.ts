@@ -9,7 +9,8 @@ import {
     Save,
     X,
     CheckCircle,
-    AlertCircle
+    AlertCircle,
+    Loader2
 } from 'lucide-angular';
 
 @Component({
@@ -29,6 +30,7 @@ export class ProjectJsonModalComponent implements OnInit {
     initialJsonContent: string = '';
     errorMessage: string | null = null;
     successMessage: string | null = null;
+    isProcessing: boolean = false;
 
     // Icons
     readonly Copy = Copy;
@@ -36,6 +38,7 @@ export class ProjectJsonModalComponent implements OnInit {
     readonly X = X;
     readonly CheckCircle = CheckCircle;
     readonly AlertCircle = AlertCircle;
+    readonly Loader2 = Loader2;
 
     ngOnInit(): void {
         // Stringify current projects with pretty printing
@@ -53,7 +56,7 @@ export class ProjectJsonModalComponent implements OnInit {
         });
     }
 
-    saveChanges(): void {
+    async saveChanges(): Promise<void> {
         this.errorMessage = null;
         try {
             const parsedData = JSON.parse(this.jsonContent);
@@ -68,14 +71,21 @@ export class ProjectJsonModalComponent implements OnInit {
             // Check for ID uniqueness
             this.checkIDUnicity(parsedData);
 
+            this.isProcessing = true;
+
+            // Artificial delay to show the loader as requested
+            await new Promise(resolve => setTimeout(resolve, 1000));
 
             this.roadmapService.replaceProjects(parsedData);
             this.successMessage = 'Projects imported successfully!';
+            this.isProcessing = false;
+
             setTimeout(() => {
                 this.successMessage = null;
                 this.close.emit();
             }, 1500);
         } catch (e: any) {
+            this.isProcessing = false;
             this.errorMessage = 'Invalid JSON: ' + e.message;
         }
     }
