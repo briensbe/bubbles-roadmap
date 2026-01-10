@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { Component, inject, OnInit, signal, computed, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RoadmapService } from '../roadmap.service';
 import { ProjectBubbleComponent } from '../project-bubble/project-bubble.component';
@@ -7,16 +7,18 @@ import { ProjectEditModalComponent } from '../project-edit-modal/project-edit-mo
 import { ROADMAP_CONFIG } from '../models/project.constants';
 import { LucideAngularModule, ChevronLeft, ChevronRight, Plus, Search } from 'lucide-angular';
 import { FormsModule } from '@angular/forms';
-import { range } from 'rxjs';
+import { TimelineBrushComponent } from './timeline-brush/timeline-brush.component';
 
 @Component({
   selector: 'app-roadmap',
   standalone: true,
-  imports: [CommonModule, ProjectBubbleComponent, ProjectEditModalComponent, LucideAngularModule, FormsModule],
+  imports: [CommonModule, ProjectBubbleComponent, ProjectEditModalComponent, TimelineBrushComponent, LucideAngularModule, FormsModule],
   templateUrl: './roadmap.component.html',
   styleUrl: './roadmap.component.css'
 })
 export class RoadmapComponent implements OnInit {
+  @ViewChild('gridContainer') gridContainer!: ElementRef<HTMLDivElement>;
+
   // Icons
   readonly ChevronLeft = ChevronLeft;
   readonly ChevronRight = ChevronRight;
@@ -24,125 +26,157 @@ export class RoadmapComponent implements OnInit {
   readonly Search = Search;
   readonly Math = Math;
 
-
   roadmapService = inject(RoadmapService);
   projects = this.roadmapService.projects;
 
   // Expose configuration to template
   readonly CONFIG = ROADMAP_CONFIG;
 
-  // Timeline Configuration
-  readonly viewDurationMonths = 24;
-  // Use a signal for viewStartDate to ensure reactivity
-  viewStartDate = signal<Date>(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
+  // --- TIME & ZOOM STATE ---
+  focusedYear = signal(2026);
 
-  get timelineMonths(): { name: string, year: number }[] {
-    const months = [];
+  globalStartDate = computed(() => new Date(this.focusedYear(), 0, 1));
+  globalEndDate = computed(() => new Date(this.focusedYear(), 11, 31));
+
+  viewStartDate = signal<Date>(new Date(2026, 0, 1));
+  viewEndDate = signal<Date>(new Date(2026, 3, 30)); // April 30th (4 months)
+
+  viewDurationMs = computed(() => this.viewEndDate().getTime() - this.viewStartDate().getTime());
+
+  viewDurationMonths = computed(() => {
     const start = this.viewStartDate();
-    for (let i = 0; i < this.viewDurationMonths; i++) {
-      const date = new Date(start.getFullYear(), start.getMonth() + i, 1);
-      months.push({
-        name: date.toLocaleString('default', { month: 'short' }),
-        year: date.getFullYear()
-      });
+    const end = this.viewEndDate();
+    return (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth()) + (end.getDate() - start.getDate()) / 30;
+  });
+
+  get timelineMonths(): { name: string, year: number, leftPercent: number }[] {
+    const months = [];
+    const viewStart = this.viewStartDate();
+    const viewEnd = this.viewEndDate();
+    const viewDuration = this.viewDurationMs();
+
+    let currentIter = new Date(viewStart.getFullYear(), viewStart.getMonth(), 1);
+
+    let limit = 0;
+    while (currentIter < viewEnd && limit < 100) {
+      if (currentIter >= viewStart || new Date(currentIter.getFullYear(), currentIter.getMonth() + 1, 0) > viewStart) {
+        const positionMs = currentIter.getTime() - viewStart.getTime();
+        const leftPercent = (positionMs / viewDuration) * 100;
+
+        if (leftPercent < 100) {
+          months.push({
+            name: currentIter.toLocaleString('default', { month: 'short' }),
+            year: currentIter.getFullYear(),
+            leftPercent: Math.max(0, leftPercent)
+          });
+        }
+      }
+      currentIter = new Date(currentIter.getFullYear(), currentIter.getMonth() + 1, 1);
+      limit++;
     }
     return months;
   }
 
-  // Filter states
-  activeComplexityFilters = signal<Set<string>>(new Set(['XS', 'S', 'M', 'L', 'XL'])); // All active by default
-  activeServiceFilters = signal<Set<string>>(new Set()); // Will be populated on init
+  // --- /TIME & ZOOM STATE ---
 
-  // Filter projects to only show those visible in the current view
+  activeComplexityFilters = signal<Set<string>>(new Set(['XS', 'S', 'M', 'L', 'XL']));
+  activeServiceFilters = signal<Set<string>>(new Set());
+
   visibleProjects = computed(() => {
     const projects = this.projects();
     const start = this.viewStartDate();
-    // End date is start + duration months
-    const end = new Date(start.getFullYear(), start.getMonth() + this.viewDurationMonths, 0);
+    const end = this.viewEndDate();
 
     return projects.filter(p => {
       const pDate = new Date(p.startDate);
       const inView = pDate >= start && pDate <= end;
 
-      // Search filter
+      const bufferMs = 30 * 24 * 60 * 60 * 1000;
+      const extendedStart = new Date(start.getTime() - bufferMs);
+      const extendedEnd = new Date(end.getTime() + bufferMs);
+      const isRelevant = pDate >= extendedStart && pDate <= extendedEnd;
+
       const search = this.searchText().toLowerCase();
       const searchMatch = !search ||
         p.name.toLowerCase().includes(search) ||
         p.projectKey?.toLowerCase().includes(search);
 
-      // Complexity filter
       const complexityLabel = this.getComplexityLabel(p.complexity);
       const complexityMatch = this.activeComplexityFilters().has(complexityLabel);
 
-      // Service filter
       const serviceMatch = this.activeServiceFilters().has(p.service);
 
-      return inView && searchMatch && complexityMatch && serviceMatch;
+      return isRelevant && searchMatch && complexityMatch && serviceMatch;
     });
   });
 
-  // Computed property for filtered project count
   filteredProjectCount = computed(() => this.visibleProjects().length);
 
-  // Computed property to count projects per visible year
-  projectCounts = computed(() => {
-    const projects = this.projects();
-    const start = this.viewStartDate();
-    const end = new Date(start.getFullYear(), start.getMonth() + this.viewDurationMonths, 0);
-
-    // Get unique years in the view
-    const years = new Set<number>();
-    for (let i = 0; i < this.viewDurationMonths; i++) {
-      const d = new Date(start.getFullYear(), start.getMonth() + i, 1);
-      years.add(d.getFullYear());
-    }
-
-    const counts: { year: number, count: number }[] = [];
-    years.forEach(year => {
-      const count = projects.filter(p => {
-        const pDate = new Date(p.startDate);
-        return pDate.getFullYear() === year;
-      }).length;
-      counts.push({ year, count });
-    });
-
-    return counts.sort((a, b) => a.year - b.year);
+  currentYear = computed(() => {
+    const centerMs = this.viewStartDate().getTime() + this.viewDurationMs() / 2;
+    return new Date(centerMs).getFullYear();
   });
 
-  // Current year based on viewStartDate
-  currentYear = computed(() => this.viewStartDate().getFullYear());
-
-  // Navigation years (N-1, N, N+1)
   navigationYears = computed(() => {
+    // Current year is based on the VIEW center, not necessarily the focused "Global" year.
+    // However, usually they align.
     const current = this.currentYear();
     return [current - 1, current, current + 1];
   });
 
-  /**
-   * Returns project count for a specific year.
-   */
   getProjectCount(year: number): number {
     return this.projects().filter(p => new Date(p.startDate).getFullYear() === year).length;
   }
 
-  /**
-   * Jumps the view to start at the selected year.
-   */
-  jumpToYear(year: number): void {
-    const newDate = new Date(year, 0, 1); // Jan 1st of selected year
-    this.viewStartDate.set(newDate);
+  jumpToYear(targetYear: number): void {
+    // 1. Update the focused year so the global timeline (brush) shifts context
+    this.focusedYear.set(targetYear);
+
+    // 2. Shift the CURRENT VIEW range to the new year, maintaining month/day offsets
+    const currentStart = this.viewStartDate();
+    const currentEnd = this.viewEndDate();
+
+    // Calculate the year difference
+    // Actually simpler: just creating new dates with the target year
+    // Note: This logic assumes we want to jump to the SAME dates in the new year.
+    // e.g. Feb 1 2026 -> Feb 1 2027.
+
+    const newStart = new Date(currentStart);
+    newStart.setFullYear(targetYear);
+
+    const newEnd = new Date(currentEnd);
+    newEnd.setFullYear(targetYear);
+
+    // Check for leap year edge cases? e.g. Feb 29. 
+    // setFullYear(2027) on Feb 29 2024 -> Mar 1 2027. This is acceptable default JS behavior.
+
+    this.viewStartDate.set(newStart);
+    this.viewEndDate.set(newEnd);
   }
 
-  /**
-   * Navigates the timeline by a given number of months.
-   */
   navigate(months: number): void {
-    const current = this.viewStartDate();
-    const newDate = new Date(current.getFullYear(), current.getMonth() + months, 1);
-    this.viewStartDate.set(newDate);
+    const currentStart = this.viewStartDate();
+    const currentEnd = this.viewEndDate();
+
+    const newStart = new Date(currentStart.setMonth(currentStart.getMonth() + months));
+    const newEnd = new Date(currentEnd.setMonth(currentEnd.getMonth() + months));
+
+    this.viewStartDate.set(newStart);
+    this.viewEndDate.set(newEnd);
+
+    // 1. Update the focused year so the global timeline (brush) shifts context
+    this.focusedYear.set(newStart.getFullYear());
+
   }
 
-  // State for editing and selection
+  handleRangeChange(range: { start: Date, end: Date }): void {
+    const minDuration = 1000 * 60 * 60 * 24 * 15;
+    if (range.end.getTime() - range.start.getTime() < minDuration) return;
+
+    this.viewStartDate.set(range.start);
+    this.viewEndDate.set(range.end);
+  }
+
   activeProject = signal<ProjectBubble | null>(null);
   editingProject = signal<ProjectBubble | null>(null);
   isXAxisLocked = signal<boolean>(false);
@@ -150,10 +184,6 @@ export class RoadmapComponent implements OnInit {
   searchText = signal<string>('');
   topmostProjectId = signal<number | null>(null);
 
-  /**
-   * Generates Y-axis ticks based on VALUE_RANGE.
-   * Returns an array of numbers (e.g., [0, 100, 200, 300, 400, 500, 600])
-   */
   get yAxisTicks(): number[] {
     const ticks = [];
     const step = 100;
@@ -163,8 +193,6 @@ export class RoadmapComponent implements OnInit {
     return ticks;
   }
 
-  // Constants defining the grid dimensions in pixels (must match CSS .roadmap-grid)
-  private GRID_WIDTH = 2400; // Increased for 24 months (100px per month)
   private GRID_HEIGHT = 600;
 
   visibleServiceCount = signal<number>(3);
@@ -174,7 +202,6 @@ export class RoadmapComponent implements OnInit {
     this.visibleServiceCount.update(count => count + 3);
   }
 
-  // Filter management methods
   toggleComplexityFilter(label: string): void {
     this.activeComplexityFilters.update(filters => {
       const newFilters = new Set(filters);
@@ -225,7 +252,6 @@ export class RoadmapComponent implements OnInit {
     return this.activeServiceFilters().has(service);
   }
 
-
   complexityLegend = [
     { label: 'XS', size: 50, description: 'very simple', range: [0, 50] },
     { label: 'S', size: 100, description: 'simple', range: [50, 100] },
@@ -235,8 +261,6 @@ export class RoadmapComponent implements OnInit {
   ];
 
   getLegendBubbleSize(complexity: number): number {
-    // Map complexity (0-500) to pixel size (e.g., 20px to 80px)
-    // Formula: minSize + (complexity / maxComplexity) * (maxSize - minSize)
     const minSize = 20;
     const maxSize = 80;
     const ratio = complexity / this.CONFIG.MAX_COMPLEXITY;
@@ -244,55 +268,37 @@ export class RoadmapComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Initialize service filters with all services
     this.activeServiceFilters.set(new Set(this.roadmapService.distinctServices()));
   }
 
-  /**
-   * Calculates the X position (in pixels) based on the project's start date.
-   * Maps the date relative to viewStartDate across the GRID_WIDTH (24 months).
-   */
-  calculateXPosition(date: Date): number {
-    const start = new Date(date);
-    const viewStart = this.viewStartDate();
+  calculateXPositionPercentage(date: Date): number {
+    const startMs = new Date(date).getTime();
+    const viewStartMs = this.viewStartDate().getTime();
+    const viewDurationMs = this.viewDurationMs();
 
-    // Calculate difference in months
-    const monthsDiff = (start.getFullYear() - viewStart.getFullYear()) * 12 + (start.getMonth() - viewStart.getMonth());
-
-    // Calculate fraction of current month
-    const daysInMonth = new Date(start.getFullYear(), start.getMonth() + 1, 0).getDate();
-    const monthFraction = (start.getDate() - 1) / daysInMonth;
-
-    // Total months from start
-    const totalMonths = monthsDiff + monthFraction;
-
-    // Normalize to grid width (can extend beyond 0-1 range)
-    const normalizedPosition = totalMonths / this.viewDurationMonths;
-
-    return normalizedPosition * this.GRID_WIDTH;
+    const percentage = ((startMs - viewStartMs) / viewDurationMs) * 100;
+    return percentage;
   }
 
-  /**
-   * Calculates the Y position (in pixels) based on the project's value (0-50).
-   * Maps Value 0 to 0px (bottom) and Value 50 to GRID_HEIGHT (top).
-   */
+  calculateXPosition(date: Date): number {
+    return this.calculateXPositionPercentage(date);
+  }
+
   calculateYPosition(value: number): number {
-    // Value 0 maps to 0px (bottom), Value 650 maps to 600px (top)
     const normalizedValue = Math.min(value, this.CONFIG.VALUE_RANGE) / this.CONFIG.VALUE_RANGE;
     return normalizedValue * this.GRID_HEIGHT;
   }
 
   openEditModal(project: ProjectBubble): void {
     this.editingProject.set(project);
-    // When editing, also make it the active (visually selected) project
     this.activeProject.set(project);
   }
 
   openAddModal(): void {
     const newProject: ProjectBubble = {
-      id: 0, // 0 indicates a new project to the service
+      id: 0,
       name: 'Nouveau projet',
-      service: 'IT', // Default service
+      service: 'IT',
       complexity: 100,
       value: 100,
       startDate: new Date(this.viewStartDate())
@@ -304,81 +310,62 @@ export class RoadmapComponent implements OnInit {
     this.editingProject.set(null);
   }
 
-  /**
-   * Selects a project (e.g., on single click) to persist hover-like styles.
-   */
   selectProject(project: ProjectBubble): void {
     this.activeProject.set(project);
   }
 
-  /**
-   * Deselects the current project (e.g., when clicking the background).
-   */
   deselectProject(): void {
     this.activeProject.set(null);
   }
 
-  /**
-   * Handles the end of a drag event, calculates new data values, and opens the modal.
-   */
-  handlePositionChange(event: { project: ProjectBubble, newX: number, newY: number }): void {
-    const { project, newX, newY } = event;
+  handlePositionChange(event: { project: ProjectBubble, newX: number, newY: number, newXPercent?: number }): void {
+    const { project, newX, newY, newXPercent } = event;
 
-    // 1. Calculate new Value (Y position)
     const normalizedValue = Math.max(0, Math.min(newY, this.GRID_HEIGHT)) / this.GRID_HEIGHT;
-    // Map pixels to logical range (0-650), then clamp the actual data value to 500
     const calculatedValue = Math.round(normalizedValue * this.CONFIG.VALUE_RANGE);
-    const newValue = Math.min(this.CONFIG.MAX_BUSINESS_VALUE, calculatedValue); // on bloque à 500 max 
+    const newValue = Math.min(this.CONFIG.MAX_BUSINESS_VALUE, calculatedValue);
 
-    // 2. Calculate new Start Date (X position)
-    const normalizedTime = Math.max(0, Math.min(newX, this.GRID_WIDTH)) / this.GRID_WIDTH; // 0 to 1
-    const totalMonthsFromStart = normalizedTime * this.viewDurationMonths;
+    let normalizedTime: number;
 
-    // Add these months to viewStartDate
-    const viewStart = this.viewStartDate();
-    const targetMonthIndex = Math.floor(totalMonthsFromStart);
-    const dayFraction = totalMonthsFromStart - targetMonthIndex;
+    if (newXPercent !== undefined) {
+      // PREFERRED: Use the percentage calculated by the bubble context
+      normalizedTime = newXPercent / 100;
+    } else {
+      // FALLBACK: Use local grid container width
+      const containerWidth = this.gridContainer ? this.gridContainer.nativeElement.offsetWidth : 1000;
+      normalizedTime = Math.max(0, Math.min(newX, containerWidth)) / containerWidth;
+    }
 
-    const targetDate = new Date(viewStart.getFullYear(), viewStart.getMonth() + targetMonthIndex, 1);
+    const viewDurationMs = this.viewDurationMs();
+    const timeOffsetMs = normalizedTime * viewDurationMs;
 
-    // Ensure accurate day calculation for the target month
-    const daysInNewMonth = new Date(targetDate.getFullYear(), targetDate.getMonth() + 1, 0).getDate();
-    const newDay = Math.max(1, Math.round(dayFraction * daysInNewMonth));
+    const newStartMs = this.viewStartDate().getTime() + timeOffsetMs;
+    const targetDate = new Date(newStartMs);
+    targetDate.setHours(0, 0, 0, 0);
 
     const newStartDate = this.isXAxisLocked()
       ? project.startDate
-      : new Date(targetDate.getFullYear(), targetDate.getMonth(), newDay);
+      : targetDate;
 
-    // Create a temporary project object with updated values
     const updatedProject: ProjectBubble = {
       ...project,
       value: newValue,
       startDate: newStartDate,
     };
 
-    // Update the project directly in the service
     this.roadmapService.updateProject(updatedProject);
-
-    // Maintain visual selection of the moved project
     this.activeProject.set(updatedProject);
   }
 
-  /**
-   * Handles the end of a resize drag event, updates complexity, and opens the modal.
-   */
   handleComplexityChange(event: { project: ProjectBubble, newComplexity: number }): void {
     const { project, newComplexity } = event;
 
-    // Create a temporary project object with updated complexity
     const updatedProject: ProjectBubble = {
       ...project,
       complexity: newComplexity,
     };
 
-    // Update the project directly in the service
     this.roadmapService.updateProject(updatedProject);
-
-    // Maintain visual selection
     this.activeProject.set(updatedProject);
   }
 }

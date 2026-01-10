@@ -1,0 +1,21 @@
+<div class="brush-container">
+  <div class="brush-track" #track>
+    <!-- Background layer (can contain mini-viz) -->
+    <div class="brush-background"></div>
+
+    <!-- Selection Overlay -->
+    <div
+      class="brush-selection"
+      [style.left.%]="leftPercent()"
+      [style.width.%]="widthPercent()"
+      (mousedown)="onMouseDownSelection($event)"
+    >
+      <!-- Handles -->
+      <div class="resize-handle handle-left" (mousedown)="onMouseDownHandle($event, 'left')"></div>
+      <div
+        class="resize-handle handle-right"
+        (mousedown)="onMouseDownHandle($event, 'right')"
+      ></div>
+    </div>
+  </div>
+</div>

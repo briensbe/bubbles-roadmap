@@ -90,10 +90,21 @@ export class ProjectBubbleComponent implements OnInit {
     // Get the current position relative to the starting point
     const dragOffset = event.distance;
 
+    /*    // Get parent width to convert percentage to pixels
+        const element = event.source.element.nativeElement;
+        const parent = element.offsetParent as HTMLElement;
+        const parentWidth = parent ? parent.offsetWidth : 1; // Avoid divide by zero
+    
+        // Convert initialX (which is in %) to pixels
+        const initialPixelX = (this.initialX / 100) * parentWidth;
+    */
     // Calculate the new center position in pixels relative to the grid origin (bottom-left)
     const newX = this.initialX + dragOffset.x;
     const newY = this.initialY - dragOffset.y; // Y is inverted for CSS bottom property
-
+    /*
+        // Convert new X back to percentage for the parent to handle independent of grid width logic
+        const newXPercent = (newX / parentWidth) * 100;
+    */
     this.positionChange.emit({
       project: this.project,
       newX: newX,

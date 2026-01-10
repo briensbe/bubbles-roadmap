@@ -65,20 +65,24 @@
 
     <!-- Right: Scrollable Grid & X-Axis -->
     <div class="scrollable-content">
-      <div class="roadmap-grid" (click)="deselectProject()">
+      <div class="roadmap-grid" #gridContainer (click)="deselectProject()">
         <!-- Grid Lines Y -->
         @for (i of yAxisTicks; track i) { @if (i > 0) {
         <div class="grid-line-y" [style.bottom.%]="(i / CONFIG.VALUE_RANGE) * 100"></div>
         } }
 
         <!-- Grid Lines X and X-Axis (Timeline) -->
-        @for (month of timelineMonths; track month.name + month.year; let i = $index) {
-        <div class="grid-line-x" [style.left.%]="(i + 1) * (100 / viewDurationMonths)"></div>
+        @for (month of timelineMonths; track month.name + month.year) {
+        <div class="grid-line-x" [style.left.%]="month.leftPercent"></div>
         }
 
         <div class="axis-x">
           @for (month of timelineMonths; track month.name + month.year) {
-          <div class="month-label">
+          <div
+            class="month-label"
+            [style.left.%]="month.leftPercent"
+            style="position: absolute; transform: translateX(5px)"
+          >
             <span class="month-name">{{ month.name }}</span>
             <span class="month-year">{{ month.year }}</span>
           </div>
@@ -96,7 +100,7 @@
             [lockXAxis]="isXAxisLocked()"
             [showLabelsOnHoverOnly]="showLabelsOnHoverOnly()"
             [style.position]="'absolute'"
-            [style.left.px]="calculateXPosition(project.startDate)"
+            [style.left.%]="calculateXPositionPercentage(project.startDate)"
             [style.bottom.px]="calculateYPosition(project.value)"
             [style.z-index]="topmostProjectId() === project.id ? 100 : 10"
             (hovered)="topmostProjectId.set(project.id)"
@@ -108,6 +112,15 @@
           }
         </div>
       </div>
+
+      <!-- TIMELINE BRUSH CONTROL -->
+      <app-timeline-brush
+        [globalStartDate]="globalStartDate()"
+        [globalEndDate]="globalEndDate()"
+        [activeStartDate]="viewStartDate()"
+        [activeEndDate]="viewEndDate()"
+        (rangeChange)="handleRangeChange($event)"
+      ></app-timeline-brush>
     </div>
   </div>
 

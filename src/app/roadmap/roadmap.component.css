@@ -225,7 +225,7 @@ input:checked + .slider:before {
   overflow: visible; /* Allow axes to be visible */
   padding-bottom: 50px; /* Space for X axis */
   position: relative;
-  min-height: 650px; /* Height of grid + X axis */
+  min-height: 700px; /* Height of grid + X axis + Brush */
 }
 
 .y-axis-container {
@@ -271,19 +271,19 @@ input:checked + .slider:before {
 
 .scrollable-content {
   flex: 1;
-  overflow-x: auto;
-  overflow-y: hidden;
+  /* overflow-x: auto;  REMOVED: We don't want native scrolling anymore */
+  overflow: visible;
   position: relative;
-  min-height: 650px; /* Ensures grid (600px) + X axis labels (~50px) are fully visible */
+  min-height: 650px;
 }
 
 .roadmap-grid {
   position: relative;
-  width: 2400px; /* Width for 24 months */
+  width: 100%; /* CHANGED: Was 2400px fixed */
   height: 600px;
   border: 1px solid #ccc;
   background-color: white;
-  margin: 0; /* Removing margins since we have y-axis-container */
+  margin: 0;
 }
 
 .bubbles-viewport {
@@ -302,16 +302,14 @@ input:checked + .slider:before {
   bottom: -35px;
   left: 0;
   width: 100%;
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.8rem;
-  color: #555;
+  height: 30px;
   pointer-events: none;
 }
 
 .month-label {
-  flex-basis: calc(100% / 24);
-  text-align: center;
+  /* Layout logic handled by absolute positioning in inline styles now */
+  /* flex-basis: calc(100% / 24); REMOVED */
+  text-align: left;
   border-left: 1px dashed #eee;
   display: flex;
   flex-direction: column;
