@@ -280,8 +280,18 @@ export class RoadmapComponent implements OnInit {
     return percentage;
   }
 
+  /**
+   * Calculate X position in PIXELS based on current grid width
+   */
+  calculateXPositionPixels(date: Date): number {
+    const percentage = this.calculateXPositionPercentage(date);
+    const gridWidth = this.gridContainer ? this.gridContainer.nativeElement.offsetWidth : 1000;
+    return (percentage / 100) * gridWidth;
+  }
+
   calculateXPosition(date: Date): number {
-    return this.calculateXPositionPercentage(date);
+    // For initialX input, use pixels
+    return this.calculateXPositionPixels(date);
   }
 
   calculateYPosition(value: number): number {
@@ -318,29 +328,30 @@ export class RoadmapComponent implements OnInit {
     this.activeProject.set(null);
   }
 
-  handlePositionChange(event: { project: ProjectBubble, newX: number, newY: number, newXPercent?: number }): void {
-    const { project, newX, newY, newXPercent } = event;
+  handlePositionChange(event: { project: ProjectBubble, newX: number, newY: number }): void {
+    const { project, newX, newY } = event;
 
+    // Calculate new Value (Y position) - straightforward, Y is in pixels
     const normalizedValue = Math.max(0, Math.min(newY, this.GRID_HEIGHT)) / this.GRID_HEIGHT;
     const calculatedValue = Math.round(normalizedValue * this.CONFIG.VALUE_RANGE);
     const newValue = Math.min(this.CONFIG.MAX_BUSINESS_VALUE, calculatedValue);
 
-    let normalizedTime: number;
-
-    if (newXPercent !== undefined) {
-      // PREFERRED: Use the percentage calculated by the bubble context
-      normalizedTime = newXPercent / 100;
-    } else {
-      // FALLBACK: Use local grid container width
-      const containerWidth = this.gridContainer ? this.gridContainer.nativeElement.offsetWidth : 1000;
-      normalizedTime = Math.max(0, Math.min(newX, containerWidth)) / containerWidth;
-    }
+    // Calculate new Start Date (X position) - convert pixels to date
+    const gridWidth = this.gridContainer ? this.gridContainer.nativeElement.offsetWidth : 1000;
+    const normalizedTime = Math.max(0, Math.min(newX, gridWidth)) / gridWidth;
 
     const viewDurationMs = this.viewDurationMs();
     const timeOffsetMs = normalizedTime * viewDurationMs;
 
     const newStartMs = this.viewStartDate().getTime() + timeOffsetMs;
     const targetDate = new Date(newStartMs);
+
+    // Validate the date
+    if (isNaN(targetDate.getTime())) {
+      console.error('Invalid date calculated:', { newX, gridWidth, normalizedTime, viewDurationMs });
+      return;
+    }
+
     targetDate.setHours(0, 0, 0, 0);
 
     const newStartDate = this.isXAxisLocked()
