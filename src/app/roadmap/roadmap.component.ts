@@ -39,7 +39,7 @@ export class RoadmapComponent implements OnInit {
   globalEndDate = computed(() => new Date(this.focusedYear(), 11, 31));
 
   viewStartDate = signal<Date>(new Date(2026, 0, 1));
-  viewEndDate = signal<Date>(new Date(2026, 3, 30)); // April 30th (4 months)
+  viewEndDate = signal<Date>(new Date(2026, 11, 31));
 
   viewDurationMs = computed(() => this.viewEndDate().getTime() - this.viewStartDate().getTime());
 
