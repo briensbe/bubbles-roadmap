@@ -238,7 +238,7 @@ input:checked + .slider:before {
   background-color: #f9f9f9; /* Match container bg */
   display: flex;
   align-items: center;
-  padding-left: 10px;
+  padding-left: 25px;
 }
 
 .axis-y {
@@ -263,7 +263,7 @@ input:checked + .slider:before {
 
 .axis-y-label {
   position: absolute;
-  left: -30px;
+  left: -40px;
   top: 50%;
   transform: rotate(-90deg) translateY(-50%);
   font-weight: bold;
