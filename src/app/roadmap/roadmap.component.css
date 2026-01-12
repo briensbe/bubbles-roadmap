@@ -229,13 +229,16 @@ input:checked + .slider:before {
 }
 
 .y-axis-container {
-  width: 80px; /* Space for Y axis labels */
+  width: 100px; /* Space for Y axis labels + Brush */
   position: relative;
   flex-shrink: 0;
   height: 600px; /* Match grid height */
   margin-top: 0;
   z-index: 5;
   background-color: #f9f9f9; /* Match container bg */
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
 }
 
 .axis-y {
@@ -260,7 +263,7 @@ input:checked + .slider:before {
 
 .axis-y-label {
   position: absolute;
-  left: -20px;
+  left: -30px;
   top: 50%;
   transform: rotate(-90deg) translateY(-50%);
   font-weight: bold;

@@ -1,0 +1,20 @@
+<div class="brush-container">
+  <div class="brush-track" #track>
+    <div class="brush-background"></div>
+
+    <!-- Selection Overlay -->
+    <div
+      class="brush-selection"
+      [style.bottom.%]="bottomPercent()"
+      [style.height.%]="heightPercent()"
+      (mousedown)="onMouseDownSelection($event)"
+    >
+      <!-- Handles -->
+      <div class="resize-handle handle-top" (mousedown)="onMouseDownHandle($event, 'top')"></div>
+      <div
+        class="resize-handle handle-bottom"
+        (mousedown)="onMouseDownHandle($event, 'bottom')"
+      ></div>
+    </div>
+  </div>
+</div>

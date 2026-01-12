@@ -53,6 +53,13 @@
   <div class="main-chart-area">
     <!-- Left: Fixed Y-Axis column -->
     <div class="y-axis-container">
+      <app-value-brush
+        [min]="0"
+        [max]="CONFIG.VALUE_RANGE"
+        [activeMin]="viewMinValue()"
+        [activeMax]="viewMaxValue()"
+        (rangeChange)="handleValueRangeChange($event)"
+      ></app-value-brush>
       <div class="axis-y-label">Value (Max {{ CONFIG.MAX_BUSINESS_VALUE }})</div>
       <div class="axis-y">
         @for (i of yAxisTicks; track i) {

@@ -8,11 +8,12 @@ import { ROADMAP_CONFIG } from '../models/project.constants';
 import { LucideAngularModule, ChevronLeft, ChevronRight, Plus, Search } from 'lucide-angular';
 import { FormsModule } from '@angular/forms';
 import { TimelineBrushComponent } from './timeline-brush/timeline-brush.component';
+import { ValueBrushComponent } from './value-brush/value-brush.component';
 
 @Component({
   selector: 'app-roadmap',
   standalone: true,
-  imports: [CommonModule, ProjectBubbleComponent, ProjectEditModalComponent, TimelineBrushComponent, LucideAngularModule, FormsModule],
+  imports: [CommonModule, ProjectBubbleComponent, ProjectEditModalComponent, TimelineBrushComponent, ValueBrushComponent, LucideAngularModule, FormsModule],
   templateUrl: './roadmap.component.html',
   styleUrl: './roadmap.component.css'
 })
@@ -40,6 +41,9 @@ export class RoadmapComponent implements OnInit {
 
   viewStartDate = signal<Date>(new Date(2026, 0, 1));
   viewEndDate = signal<Date>(new Date(2026, 11, 31));
+
+  viewMinValue = signal<number>(0);
+  viewMaxValue = signal<number>(ROADMAP_CONFIG.MAX_BUSINESS_VALUE);
 
   viewDurationMs = computed(() => this.viewEndDate().getTime() - this.viewStartDate().getTime());
 
@@ -106,7 +110,9 @@ export class RoadmapComponent implements OnInit {
 
       const serviceMatch = this.activeServiceFilters().has(p.service);
 
-      return isRelevant && searchMatch && complexityMatch && serviceMatch;
+      const valueMatch = p.value >= this.viewMinValue() && p.value <= this.viewMaxValue();
+
+      return isRelevant && searchMatch && complexityMatch && serviceMatch && valueMatch;
     });
   });
 
@@ -175,6 +181,11 @@ export class RoadmapComponent implements OnInit {
 
     this.viewStartDate.set(range.start);
     this.viewEndDate.set(range.end);
+  }
+
+  handleValueRangeChange(range: { min: number, max: number }): void {
+    this.viewMinValue.set(range.min);
+    this.viewMaxValue.set(range.max);
   }
 
   activeProject = signal<ProjectBubble | null>(null);
